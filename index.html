@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Квадратичное дыхание</title>
+    <style>
+      :root {
+    --primary-color: #4b6cb7;
+    --secondary-color: #182848;
+    --accent-color: #74ebd5;
+    --text-color: #333;
+    --light-text: #fff;
+    --bg-color: #f7f9fc;
+    --card-bg: #ffffff;
+    --circle-inhale: #78c5d6;
+    --circle-hold1: #4b6cb7;
+    --circle-exhale: #5c95ff;
+    --circle-hold2: #348ac7;
+    --shadow: 0 4px 12px rgba(0,0,0,0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--bg-color) 0%, #e6f0ff 100%);
+    color: var(--text-color);
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+header h1 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+.breathing-box {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.phase-display {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.timer-count {
+    font-size: 5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.phase-text {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+}
+
+.visual-guide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 250px;
+}
+
+.circle {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.indicator {
+    width: 30px;
+    height: 30px;
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    transform-origin: center 110px;
+    transition: transform 1s linear;
+}
+
+.controls {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+}
+
+.settings {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+label {
+    font-weight: 500;
+    color: var(--secondary-color);
+}
+
+input[type="number"] {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.interval-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.btn-circle:hover {
+    background-color: var(--secondary-color);
+}
+
+.sound-toggles {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    background-color: #e9ecef;
+    color: var(--text-color);
+}
+
+.sound-btn {
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sound-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn.primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.session-info {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+}
+
+.remaining-time {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.progress-bar {
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--circle-inhale), var(--circle-hold1));
+    width: 0%;
+    transition: width 1s linear;
+}
+
+/* Анимации для вдоха и выдоха */
+@keyframes inhale {
+    from {
+        transform: scale(0.8);
+        border-color: var(--circle-inhale);
+    }
+    to {
+        transform: scale(1);
+        border-color: var(--circle-hold1);
+    }
+}
+
+@keyframes exhale {
+    from {
+        transform: scale(1);
+        border-color: var(--circle-exhale);
+    }
+    to {
+        transform: scale(0.8);
+        border-color: var(--circle-hold2);
+    }
+}
+
+.inhale {
+    animation: inhale var(--duration) ease-in-out forwards;
+}
+
+.exhale {
+    animation: exhale var(--duration) ease-in-out forwards;
+}
+
+.hold {
+    transition: border-color var(--duration) ease-in-out;
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    .settings {
+        grid-template-columns: 1fr;
+    }
+    
+    .timer-count {
+        font-size: 4rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .visual-guide {
+        height: 200px;
+    }
+    
+    .circle {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .indicator {
+        transform-origin: center 90px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .breathing-box,
+    .controls,
+    .session-info {
+        padding: 15px;
+    }
+    
+    .timer-count {
+        font-size: 3.5rem;
+    }
+    
+    .phase-text {
+        font-size: 1.2rem;
+    }
+    
+    header h1 {
+        font-size: 1.8rem;
+    }
+}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Квадратичное дыхание</h1>
+        </header>
+        
+        <div class="breathing-box">
+            <div class="phase-display">
+                <div class="timer-count">10</div>
+                <div class="phase-text">Подготовьтесь</div>
+            </div>
+            
+            <div class="visual-guide">
+                <div class="circle">
+                    <div class="indicator"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="settings">
+                <div class="setting-group">
+                    <label for="interval-length">Продолжительность (секунды):</label>
+                    <div class="interval-control">
+                        <button id="decrease-interval" class="btn-circle">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="interval-length" min="2" max="20" value="10">
+                        <button id="increase-interval" class="btn-circle">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label for="preparation-time">Подготовка (секунды):</label>
+                    <input type="number" id="preparation-time" min="0" max="15" value="5">
+                </div>
+                
+                <div class="setting-group">
+                    <label for="session-duration">Длительность сессии (минуты):</label>
+                    <input type="number" id="session-duration" min="1" max="60" value="5">
+                </div>
+                
+                <div class="setting-group">
+                    <label>Звуки:</label>
+                    <div class="sound-toggles">
+                        <button id="toggle-phase-sounds" class="btn sound-btn active">
+                            <i class="fas fa-volume-up"></i> Звуки фаз
+                        </button>
+                        <button id="toggle-background" class="btn sound-btn">
+                            <i class="fas fa-music"></i> Фоновая музыка
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="start-btn" class="btn primary">Начать</button>
+                <button id="pause-btn" class="btn" disabled>Пауза</button>
+                <button id="stop-btn" class="btn" disabled>Стоп</button>
+            </div>
+        </div>
+        
+        <div class="session-info">
+            <div class="remaining-time">
+                <span id="minutes">05</span>:<span id="seconds">00</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Аудио элементы -->
+    <audio id="inhale-sound" preload="auto">
+        <source src="sounds/inhale.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hold-sound" preload="auto">
+        <source src="sounds/hold.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="exhale-sound" preload="auto">
+        <source src="sounds/exhale.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="background-sound" loop preload="auto">
+        <source src="sounds/background.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+    // Элементы интерфейса
+    const timerCount = document.querySelector('.timer-count');
+    const phaseText = document.querySelector('.phase-text');
+    const circle = document.querySelector('.circle');
+    const indicator = document.querySelector('.indicator');
+    const minutesDisplay = document.getElementById('minutes');
+    const secondsDisplay = document.getElementById('seconds');
+    const progressBar = document.querySelector('.progress');
+    
+    // Кнопки управления
+    const startBtn = document.getElementById('start-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    const stopBtn = document.getElementById('stop-btn');
+    const decreaseIntervalBtn = document.getElementById('decrease-interval');
+    const increaseIntervalBtn = document.getElementById('increase-interval');
+    const togglePhaseSoundsBtn = document.getElementById('toggle-phase-sounds');
+    const toggleBackgroundBtn = document.getElementById('toggle-background');
+    
+    // Поля ввода
+    const intervalLengthInput = document.getElementById('interval-length');
+    const preparationTimeInput = document.getElementById('preparation-time');
+    const sessionDurationInput = document.getElementById('session-duration');
+    
+    // Аудио элементы
+    const inhaleSound = document.getElementById('inhale-sound');
+    const holdSound = document.getElementById('hold-sound');
+    const exhaleSound = document.getElementById('exhale-sound');
+    const backgroundSound = document.getElementById('background-sound');
+    
+    // Состояние приложения
+    const state = {
+        isRunning: false,
+        isPaused: false,
+        currentPhase: 'prep', // prep, inhale, hold1, exhale, hold2
+        currentTime: 0,
+        intervalLength: 10,
+        preparationTime: 5,
+        sessionDuration: 5, // в минутах
+        totalSessionTime: 0,
+        remainingSessionTime: 0,
+        phaseSoundsEnabled: true,
+        backgroundSoundEnabled: false,
+        timerId: null,
+        phaseTimerId: null
+    };
+    
+    // Загрузка сохраненных настроек
+    loadSettings();
+    
+    // Инициализация дисплея
+    updateDisplay();
+    
+    // Обработчики событий
+    startBtn.addEventListener('click', startBreathing);
+    pauseBtn.addEventListener('click', togglePause);
+    stopBtn.addEventListener('click', stopBreathing);
+    decreaseIntervalBtn.addEventListener('click', () => changeInterval(-1));
+    increaseIntervalBtn.addEventListener('click', () => changeInterval(1));
+    togglePhaseSoundsBtn.addEventListener('click', togglePhaseSounds);
+    toggleBackgroundBtn.addEventListener('click', toggleBackgroundSound);
+    
+    intervalLengthInput.addEventListener('change', () => {
+        state.intervalLength = parseInt(intervalLengthInput.value);
+        saveSettings();
+    });
+    
+    preparationTimeInput.addEventListener('change', () => {
+        state.preparationTime = parseInt(preparationTimeInput.value);
+        saveSettings();
+    });
+    
+    sessionDurationInput.addEventListener('change', () => {
+        state.sessionDuration = parseInt(sessionDurationInput.value);
+        saveSettings();
+        updateRemainingTimeDisplay();
+    });
+    
+    // Обработка клавиш клавиатуры
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            changeInterval(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeInterval(1);
+        }
+    });
+    
+    // Функции
+    function loadSettings() {
+        const savedSettings = JSON.parse(localStorage.getItem('breathingSettings'));
+        if (savedSettings) {
+            state.intervalLength = savedSettings.intervalLength || 10;
+            state.preparationTime = savedSettings.preparationTime || 5;
+            state.sessionDuration = savedSettings.sessionDuration || 5;
+            state.phaseSoundsEnabled = savedSettings.phaseSoundsEnabled !== undefined ? 
+                                      savedSettings.phaseSoundsEnabled : true;
+            state.backgroundSoundEnabled = savedSettings.backgroundSoundEnabled || false;
+            
+            // Обновление полей ввода
+            intervalLengthInput.value = state.intervalLength;
+            preparationTimeInput.value = state.preparationTime;
+            sessionDurationInput.value = state.sessionDuration;
+            
+            // Обновление кнопок звука
+            if (state.phaseSoundsEnabled) {
+                togglePhaseSoundsBtn.classList.add('active');
+            } else {
+                togglePhaseSoundsBtn.classList.remove('active');
+            }
+            
+            if (state.backgroundSoundEnabled) {
+                toggleBackgroundBtn.classList.add('active');
+            } else {
+                toggleBackgroundBtn.classList.remove('active');
+            }
+        }
+    }
+    
+    function saveSettings() {
+        const settings = {
+            intervalLength: state.intervalLength,
+            preparationTime: state.preparationTime,
+            sessionDuration: state.sessionDuration,
+            phaseSoundsEnabled: state.phaseSoundsEnabled,
+            backgroundSoundEnabled: state.backgroundSoundEnabled
+        };
+        localStorage.setItem('breathingSettings', JSON.stringify(settings));
+    }
+    
+    function changeInterval(delta) {
+        state.intervalLength = Math.max(2, Math.min(20, state.intervalLength + delta));
+        intervalLengthInput.value = state.intervalLength;
+        saveSettings();
+        updateDisplay();
+    }
+    
+    function togglePhaseSounds() {
+        state.phaseSoundsEnabled = !state.phaseSoundsEnabled;
+        togglePhaseSoundsBtn.classList.toggle('active');
+        saveSettings();
+    }
+    
+    function toggleBackgroundSound() {
+        state.backgroundSoundEnabled = !state.backgroundSoundEnabled;
+        toggleBackgroundBtn.classList.toggle('active');
+        
+        if (state.backgroundSoundEnabled && state.isRunning) {
+            backgroundSound.play();
+        } else {
+            backgroundSound.pause();
+            backgroundSound.currentTime = 0;
+        }
+        
+        saveSettings();
+    }
+    
+    function startBreathing() {
+        if (state.isRunning && !state.isPaused) return;
+        
+        if (!state.isPaused) {
+            // Новая сессия
+            state.currentPhase = 'prep';
+            state.currentTime = state.preparationTime;
+            state.totalSessionTime = state.sessionDuration * 60; // в секундах
+            state.remainingSessionTime = state.totalSessionTime;
+        }
+        
+        state.isRunning = true;
+        state.isPaused = false;
+        
+        // Обновление кнопок
+        startBtn.disabled = true;
+        pauseBtn.disabled = false;
+        stopBtn.disabled = false;
+        
+        // Запуск фоновой музыки если нужно
+        if (state.backgroundSoundEnabled) {
+            backgroundSound.play();
+        }
+        
+        // Запуск таймеров
+        if (!state.timerId) {
+            state.timerId = setInterval(updateSessionTime, 1000);
+        }
+        
+        if (!state.phaseTimerId) {
+            updatePhase();
+            state.phaseTimerId = setInterval(updatePhase, 1000);
+        }
+    }
+    
+    function togglePause() {
+        if (!state.isRunning) return;
+        
+        state.isPaused = !state.isPaused;
+        
+        if (state.isPaused) {
+            pauseBtn.textContent = 'Продолжить';
+            clearInterval(state.phaseTimerId);
+            state.phaseTimerId = null;
+            clearInterval(state.timerId);
+            state.timerId = null;
+            
+            if (state.backgroundSoundEnabled) {
+                backgroundSound.pause();
+            }
+        } else {
+            pauseBtn.textContent = 'Пауза';
+            state.phaseTimerId = setInterval(updatePhase, 1000);
+            state.timerId = setInterval(updateSessionTime, 1000);
+            
+            if (state.backgroundSoundEnabled) {
+                backgroundSound.play();
+            }
+        }
+    }
+    
+    function stopBreathing() {
+        state.isRunning = false;
+        state.isPaused = false;
+        
+        // Остановка таймеров
+        clearInterval(state.phaseTimerId);
+        clearInterval(state.timerId);
+        state.phaseTimerId = null;
+        state.timerId = null;
+        
+        // Остановка звуков
+        inhaleSound.pause();
+        inhaleSound.currentTime = 0;
+        holdSound.pause();
+        holdSound.currentTime = 0;
+        exhaleSound.pause();
+        exhaleSound.currentTime = 0;
+        backgroundSound.pause();
+        backgroundSound.currentTime = 0;
+        
+        // Сброс состояния
+        state.currentPhase = 'prep';
+        state.currentTime = state.preparationTime;
+        
+        // Обновление кнопок
+        startBtn.disabled = false;
+        pauseBtn.disabled = true;
+        pauseBtn.textContent = 'Пауза';
+        stopBtn.disabled = true;
+        
+        // Обновление интерфейса
+        updateDisplay();
+        updateRemainingTimeDisplay();
+        progressBar.style.width = '0%';
+        
+        // Сброс анимаций
+        circle.className = 'circle';
+    }
+    
+    function updatePhase() {
+        // Уменьшаем счетчик текущей фазы
+        state.currentTime--;
+        
+        if (state.currentTime < 0) {
+            // Переход к следующей фазе
+            switch (state.currentPhase) {
+                case 'prep':
+                    state.currentPhase = 'inhale';
+                    playPhaseSound('inhale');
+                    break;
+                case 'inhale':
+                    state.currentPhase = 'hold1';
+                    playPhaseSound('hold');
+                    break;
+                case 'hold1':
+                    state.currentPhase = 'exhale';
+                    playPhaseSound('exhale');
+                    break;
+                case 'exhale':
+                    state.currentPhase = 'hold2';
+                    playPhaseSound('hold');
+                    break;
+                case 'hold2':
+                    state.currentPhase = 'inhale';
+                    playPhaseSound('inhale');
+                    break;
+            }
+            
+            // Установка времени для новой фазы
+            state.currentTime = state.currentPhase === 'prep' ? 
+                               state.preparationTime : state.intervalLength;
+        }
+        
+        updateDisplay();
+    }
+    
+    function updateSessionTime() {
+        state.remainingSessionTime--;
+        updateRemainingTimeDisplay();
+        
+        // Обновляем прогресс-бар
+        const progress = 100 - (state.remainingSessionTime / state.totalSessionTime * 100);
+        progressBar.style.width = `${progress}%`;
+        
+        if (state.remainingSessionTime <= 0) {
+            stopBreathing();
+        }
+    }
+    
+    function playPhaseSound(phase) {
+        if (!state.phaseSoundsEnabled) return;
+        
+        switch (phase) {
+            case 'inhale':
+                inhaleSound.currentTime = 0;
+                inhaleSound.play();
+                break;
+            case 'hold':
+                holdSound.currentTime = 0;
+                holdSound.play();
+                break;
+            case 'exhale':
+                exhaleSound.currentTime = 0;
+                exhaleSound.play();
+                break;
+        }
+    }
+    
+    function updateDisplay() {
+        timerCount.textContent = state.currentTime;
+        
+        // Обновление текста фазы и анимации
+        switch (state.currentPhase) {
+            case 'prep':
+                phaseText.textContent = 'Подготовьтесь';
+                circle.className = 'circle';
+                rotateIndicator(0);
+                break;
+            case 'inhale':
+                phaseText.textContent = 'Вдох';
+                circle.className = 'circle inhale';
+                document.documentElement.style.setProperty('--duration', `${state.intervalLength}s`);
+                rotateIndicator(0);
+                break;
+            case 'hold1':
+                phaseText.textContent = 'Задержка';
+                circle.className = 'circle hold';
+                rotateIndicator(90);
+                break;
+            case 'exhale':
+                phaseText.textContent = 'Выдох';
+                circle.className = 'circle exhale';
+                document.documentElement.style.setProperty('--duration', `${state.intervalLength}s`);
+                rotateIndicator(180);
+                break;
+            case 'hold2':
+                phaseText.textContent = 'Задержка';
+                circle.className = 'circle hold';
+                rotateIndicator(270);
+                break;
+        }
+    }
+    
+    function rotateIndicator(degrees) {
+        indicator.style.transform = `rotate(${degrees}deg)`;
+    }
+    
+    function updateRemainingTimeDisplay() {
+        if (!state.isRunning) {
+            // Показываем общее время сессии
+            const minutes = String(state.sessionDuration).padStart(2, '0');
+            const seconds = '00';
+            minutesDisplay.textContent = minutes;
+            secondsDisplay.textContent = seconds;
+            return;
+        }
+        
+        // Показываем оставшееся время
+        const minutes = Math.floor(state.remainingSessionTime / 60);
+        const seconds = state.remainingSessionTime % 60;
+        minutesDisplay.textContent = String(minutes).padStart(2, '0');
+        secondsDisplay.textContent = String(seconds).padStart(2, '0');
+    }
+});
+    </script>
+</body>
+</html>
