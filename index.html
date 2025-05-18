@@ -1053,7 +1053,7 @@
         <source src="sounds/vydoh.mp3" type="audio/mpeg">
     </audio>
     <audio id="background-sound" loop preload="auto">
-        <source src="sounds/background.mp3" type="audio/mpeg">
+        <source src="sounds/background.m4a" type="audio/mpeg">
     </audio>
 
     <audio id="hold-long-sound" preload="auto">
@@ -1064,11 +1064,15 @@
     </audio>
 
     <audio id="completion-sound" preload="auto">
-        <source src="sounds/end.m4a" type="audio/mpeg">
+        <source src="sounds/finish.mp3" type="audio/mpeg">
     </audio>
 
     <script>
+            const BACKGROUND_MUSIC_VOLUME = 0.03;
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Константы
+
             // Элементы интерфейса
             const timerCount = document.querySelector('.timer-count');
             const phaseText = document.querySelector('.phase-text');
@@ -1099,6 +1103,14 @@
             const exhaleSound = document.getElementById('exhale-sound');
             const backgroundSound = document.getElementById('background-sound');
             const completionSound = document.getElementById('completion-sound');
+
+            // Добавляем обработчик события ended для гарантии непрерывного воспроизведения
+            backgroundSound.addEventListener('ended', function () {
+                if (state.backgroundSoundEnabled && state.isRunning && !state.isPaused) {
+                    this.play();
+                }
+            });
+
             // Состояние приложения
             const state = {
                 isRunning: false,
@@ -1116,7 +1128,8 @@
                 phaseTimerId: null,
                 totalCycles: 0,
                 currentCycle: 0,
-                phaseCounter: 0
+                phaseCounter: 0,
+                backgroundMusicPosition: 0 // Добавлена новая переменная для хранения позиции
             };
 
             // Загрузка сохраненных настроек
@@ -1198,6 +1211,7 @@
                     state.sessionDuration = savedSettings.sessionDuration ?? 5;
                     state.phaseSoundsEnabled = savedSettings.phaseSoundsEnabled ?? true;
                     state.backgroundSoundEnabled = savedSettings.backgroundSoundEnabled ?? false;
+                    state.backgroundMusicPosition = savedSettings.backgroundMusicPosition ?? 0;
 
                     // Обновляем текущее время для отображения
                     state.currentTime = state.preparationTime;
@@ -1210,6 +1224,10 @@
                     // Обновление кнопок звука
                     togglePhaseSoundsBtn.classList.toggle('active', state.phaseSoundsEnabled);
                     toggleBackgroundBtn.classList.toggle('active', state.backgroundSoundEnabled);
+
+
+                    // Восстановление позиции фоновой музыки
+                    backgroundSound.currentTime = state.backgroundMusicPosition;
                 }
 
                 // Обновляем отображение времени сессии
@@ -1222,7 +1240,8 @@
                     preparationTime: state.preparationTime,
                     sessionDuration: state.sessionDuration,
                     phaseSoundsEnabled: state.phaseSoundsEnabled,
-                    backgroundSoundEnabled: state.backgroundSoundEnabled
+                    backgroundSoundEnabled: state.backgroundSoundEnabled,
+                    backgroundMusicPosition: state.backgroundMusicPosition
                 };
                 localStorage.setItem('breathingSettings', JSON.stringify(settings));
             }
@@ -1275,6 +1294,7 @@
                 toggleBackgroundBtn.classList.toggle('active');
 
                 if (state.backgroundSoundEnabled && state.isRunning) {
+                    backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                     backgroundSound.play();
                 } else {
                     backgroundSound.pause();
@@ -1310,6 +1330,8 @@
 
                 // Запуск фоновой музыки если нужно
                 if (state.backgroundSoundEnabled) {
+                    backgroundSound.currentTime = state.backgroundMusicPosition;
+                    backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                     backgroundSound.play();
                 }
 
@@ -1345,12 +1367,19 @@
                     state.timerId = setInterval(updateSessionTime, 1000);
 
                     if (state.backgroundSoundEnabled) {
+                        backgroundSound.currentTime = state.backgroundMusicPosition;
+                        backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                         backgroundSound.play();
                     }
                 }
             }
 
             function stopBreathing() {
+                if (state.backgroundSoundEnabled) {
+                    // Сохраняем текущую позицию фоновой музыки
+                    state.backgroundMusicPosition = backgroundSound.currentTime;
+                    saveSettings(); // Сохраняем позицию в localStorage
+                }
                 state.isRunning = false;
                 state.isPaused = false;
 
@@ -1368,12 +1397,7 @@
                 exhaleSound.pause();
                 exhaleSound.currentTime = 0;
                 backgroundSound.pause();
-                backgroundSound.currentTime = 0;
-
-                // Воспроизведение звука завершения
-                if (state.phaseSoundsEnabled) {
-                    completionSound.play();
-                }
+                // Не сбрасываем позицию backgroundSound.currentTime = 0;
 
                 // Сброс состояния
                 state.currentPhase = 'prep';
@@ -1449,6 +1473,10 @@
                 progressBar.style.width = `${progress}%`;
 
                 if (state.remainingSessionTime <= 0) {
+                    // Воспроизводим звук завершения при естественном завершении сессии
+                    if (state.phaseSoundsEnabled) {
+                        completionSound.play();
+                    }
                     stopBreathing();
                 }
             }
@@ -1539,6 +1567,8 @@
     </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Константы
+
             // Элементы интерфейса для метода Вима Хофа
             const whTimer = document.getElementById('wh-timer');
             const whPhase = document.getElementById('wh-phase');
@@ -1587,6 +1617,16 @@
             const backgroundSound = document.getElementById('background-sound');
             const completionSound = document.getElementById('completion-sound');
 
+            // Добавляем обработчик события ended (если ещё не добавлен)
+            if (!backgroundSound._hasEndedHandler) {
+                backgroundSound.addEventListener('ended', function () {
+                    if (whState.backgroundSoundEnabled && whState.isRunning && !whState.isPaused) {
+                        this.play();
+                    }
+                });
+                backgroundSound._hasEndedHandler = true;
+            }
+
             // Состояние приложения для метода Вима Хофа
             const whState = {
                 isRunning: false,
@@ -1606,7 +1646,8 @@
                 sessionStartTime: 0,
                 sessionDuration: 0,
                 holdTime: 0, // 0 означает без ограничения (до нажатия)
-                recoveryInhaleTime: 15 // время вдоха после задержки
+                recoveryInhaleTime: 18, // время вдоха после задержки
+                backgroundMusicPosition: 0
             };
 
             // Загрузка сохраненных настроек
@@ -1625,6 +1666,7 @@
                     whState.backgroundSoundEnabled = savedSettings.backgroundSoundEnabled ?? false;
                     whState.holdTime = savedSettings.holdTime ?? 0;
                     whState.recoveryInhaleTime = savedSettings.recoveryInhaleTime ?? 15;
+                    whState.backgroundMusicPosition = savedSettings.backgroundMusicPosition ?? 0;
 
                     // Обновляем текущее время для отображения
                     whState.currentTime = whState.preparationTime;
@@ -1657,7 +1699,8 @@
                     phaseSoundsEnabled: whState.phaseSoundsEnabled,
                     backgroundSoundEnabled: whState.backgroundSoundEnabled,
                     holdTime: whState.holdTime,
-                    recoveryInhaleTime: whState.recoveryInhaleTime
+                    recoveryInhaleTime: whState.recoveryInhaleTime,
+                    backgroundMusicPosition: whState.backgroundMusicPosition
                 };
                 localStorage.setItem('wimHofSettings', JSON.stringify(settings));
             }
@@ -1774,6 +1817,9 @@
 
                 // Запуск фоновой музыки если нужно
                 if (whState.backgroundSoundEnabled) {
+                    // Используем сохраненную позицию
+                    backgroundSound.currentTime = whState.backgroundMusicPosition;
+                    backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                     backgroundSound.play();
                 }
 
@@ -1795,13 +1841,19 @@
                     whState.timerId = null;
 
                     if (whState.backgroundSoundEnabled) {
+                        // Сохраняем текущую позицию музыки и приостанавливаем
+                        whState.backgroundMusicPosition = backgroundSound.currentTime;
                         backgroundSound.pause();
+                        saveWhSettings(); // Сохраняем позицию в localStorage
                     }
                 } else {
                     whPauseBtn.textContent = 'Пауза';
                     whState.timerId = setInterval(updateWhPhase, 100);
 
                     if (whState.backgroundSoundEnabled) {
+                        // Продолжаем с сохраненной позиции
+                        backgroundSound.currentTime = whState.backgroundMusicPosition;
+                        backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                         backgroundSound.play();
                     }
                 }
@@ -1819,8 +1871,8 @@
                 updateWhProgressBar();
 
                 // Играем дополнительный звук за 3 секунды до конца восстановительной фазы
-                if (whState.currentPhase === 'recovery' && 
-                    Math.abs(whState.currentTime - 3) < 0.05 && 
+                if (whState.currentPhase === 'recovery' &&
+                    Math.abs(whState.currentTime - 3) < 0.05 &&
                     whState.phaseSoundsEnabled) {
                     inhaleSound.currentTime = 0;
                     inhaleSound.play();
@@ -1892,6 +1944,10 @@
                 } else if (whState.currentPhase === 'recovery') {
                     // Проверяем, не последний ли это раунд ПЕРЕД увеличением счетчика
                     if (whState.currentRound >= whState.rounds) {
+                        // Воспроизводим звук завершения при естественном завершении всех раундов
+                        if (whState.phaseSoundsEnabled) {
+                            completionSound.play();
+                        }
                         stopWimHof();
                         return;
                     }
@@ -1911,6 +1967,11 @@
             }
 
             function stopWimHof() {
+                if (whState.backgroundSoundEnabled) {
+                    // Сохраняем текущую позицию фоновой музыки
+                    whState.backgroundMusicPosition = backgroundSound.currentTime;
+                    saveWhSettings(); // Сохраняем позицию в localStorage
+                }
                 whState.isRunning = false;
                 whState.isPaused = false;
 
@@ -1928,12 +1989,7 @@
                 recoveryBreathSound.pause();
                 recoveryBreathSound.currentTime = 0;
                 backgroundSound.pause();
-                backgroundSound.currentTime = 0;
-
-                // Воспроизведение звука завершения
-                if (whState.phaseSoundsEnabled) {
-                    completionSound.play();
-                }
+                // Не сбрасываем позицию backgroundSound.currentTime = 0;
 
                 // Сброс состояния
                 whState.currentPhase = 'prep';
@@ -2116,6 +2172,7 @@
                 whToggleBackgroundBtn.classList.toggle('active');
 
                 if (whState.backgroundSoundEnabled && whState.isRunning) {
+                    backgroundSound.volume = BACKGROUND_MUSIC_VOLUME;
                     backgroundSound.play();
                 } else {
                     backgroundSound.pause();

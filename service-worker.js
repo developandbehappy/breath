@@ -7,6 +7,8 @@ const urlsToCache = [
     "./sounds/zvon.mp3",
     "./sounds/vydoh.mp3",
     "./sounds/vdoh.mp3",
+    "./sounds/finish.mp3",
+    "./sounds/background.m4a",
 ];
 
 // Установка Service Worker
