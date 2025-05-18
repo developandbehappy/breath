@@ -8,25 +8,25 @@
     <meta name="theme-color" content="#fff">
     <link rel="apple-touch-icon" href="./icons/192.png">
     <meta name="description"
-        content="Приложение для квадратичного дыхания - техника медитации и релаксации. Настраиваемые интервалы, звуковые сигналы и таймер для ежедневной практики.">
+        content="Приложение для дыхательных практик - квадратичное дыхание и метод Вима Хофа. Техники медитации, релаксации и повышения выносливости. Настраиваемые интервалы, звуковые сигналы и таймер для ежедневной практики.">
     <meta name="keywords"
-        content="квадратичное дыхание, бокс дыхание, дыхательная техника, медитация, релаксация, антистресс, управление тревогой, дыхательные упражнения">
+        content="квадратичное дыхание, бокс дыхание, метод Вима Хофа, ледяной человек, дыхательные техники, медитация, релаксация, антистресс, управление тревогой, дыхательные упражнения, холодовая терапия">
     <meta name="author" content="Ваше имя или название проекта">
     <meta name="robots" content="index, follow">
 
     <!-- Метатеги для Google -->
-    <meta itemprop="name" content="Квадратичное дыхание - приложение для медитации">
+    <meta itemprop="name" content="Дыхательные техники - квадратичное дыхание и метод Вима Хофа">
     <meta itemprop="description"
-        content="Практика квадратичного дыхания для снижения стресса, улучшения концентрации и релаксации. Настраиваемые таймеры и звуковые сигналы.">
+        content="Практика квадратичного дыхания и метода Вима Хофа для снижения стресса, улучшения концентрации, релаксации и повышения выносливости. Настраиваемые таймеры и звуковые сигналы.">
     <meta itemprop="image" content="https://developandbehappy.github.io/breath/icons/192.png">
 
     <!-- Open Graph метатеги для соцсетей -->
-    <meta property="og:title" content="Квадратичное дыхание - техника для релаксации и медитации">
+    <meta property="og:title" content="Дыхательные техники - квадратичное дыхание и метод Вима Хофа">
     <meta property="og:description"
-        content="Дыхательная техника 4-4-4-4 для снятия стресса и улучшения самочувствия. Интерактивное веб-приложение с таймером и настройками.">
+        content="Дыхательные техники для снятия стресса, улучшения самочувствия и повышения физической выносливости. Интерактивное веб-приложение с таймером и настройками.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://developandbehappy.github.io/breath/">
-    <title>Квадратичное дыхание</title>
+    <title>Дыхательные практики - квадратичное дыхание и метод Вима Хофа</title>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -78,6 +78,38 @@
             font-size: 2rem;
         }
 
+
+        .technique-selector {
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .technique-dropdown {
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 250px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        .technique-content {
+            display: none;
+        }
+
+        .technique-content.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Стиль для бесконечной задержки дыхания */
+        .infinite-hold {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
         .breathing-box {
             background: var(--card-bg);
             border-radius: 24px;
@@ -100,16 +132,7 @@
             z-index: 10;
         }
 
-        .cycle-duration-info {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 15px;
-            width: 250px;
-            text-align: center;
-        }
+
 
         .cycle-calculation {
             text-align: center;
@@ -271,7 +294,7 @@
             height: 100%;
             background: linear-gradient(90deg, var(--circle-inhale), var(--circle-hold1));
             width: 0%;
-            transition: width 1s linear;
+            transition: width 0.2s linear;
         }
 
         .cycles-info {
@@ -376,7 +399,6 @@
             }
         }
 
-        .cycle-duration-info h2,
         .recommendations h2 {
             color: var(--secondary-color);
             margin-bottom: 15px;
@@ -514,6 +536,14 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
             transform: translateY(-2px);
         }
+
+        .setting-hint {
+            font-size: 0.85rem;
+            color: var(--secondary-color);
+            margin-top: 5px;
+            opacity: 0.8;
+            font-style: italic;
+        }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
@@ -521,12 +551,13 @@
 <body>
     <div class="container">
         <header>
-            <h1>Квадратичное дыхание</h1>
+            <h1>Дыхательные практики</h1>
         </header>
 
         <!-- Панель с вкладками -->
         <div class="tabs">
-            <button class="tab-button active" data-tab="practice">Практика</button>
+            <button class="tab-button active" data-tab="practice">Квадратичное дыхание</button>
+            <button class="tab-button" data-tab="wim-hof">Метод Вима Хофа</button>
             <button class="tab-button" data-tab="recommendations">Рекомендации</button>
         </div>
 
@@ -573,15 +604,7 @@
                             </button>
                         </div>
                         <!-- Добавленная информация о цикле под полем продолжительности -->
-                        <div class="cycle-info">
-                            <p>Цикл: <span id="cycle-duration">40</span></p>
-                            <p class="cycle-formula">
-                                <span id="interval-value">10</span>с (вдох) +
-                                <span id="interval-value-2">10</span>с (пауза) +
-                                <span id="interval-value-3">10</span>с (выдох) +
-                                <span id="interval-value-4">10</span>с (пауза)
-                            </p>
-                        </div>
+
                     </div>
 
                     <div class="setting-group">
@@ -607,6 +630,16 @@
                     </div>
                 </div>
 
+                <div class="cycle-info">
+                    <p>Цикл: <span id="cycle-duration">40</span></p>
+                    <p class="cycle-formula">
+                        <span id="interval-value">10</span>с (вдох) +
+                        <span id="interval-value-2">10</span>с (пауза) +
+                        <span id="interval-value-3">10</span>с (выдох) +
+                        <span id="interval-value-4">10</span>с (пауза)
+                    </p>
+                </div>
+
                 <div class="action-buttons">
                     <button id="start-btn" class="btn primary">Начать</button>
                     <button id="pause-btn" class="btn" disabled>Пауза</button>
@@ -615,125 +648,398 @@
             </div>
         </div>
 
+        <div id="wim-hof" class="tab-content">
+            <!-- Основной блок с информацией о сессии -->
+            <div class="breathing-box">
+                <!-- Информация о текущем цикле и сессии -->
+                <div class="session-info">
+                    <div class="remaining-time">
+                        <span id="wh-minutes">00</span>:<span id="wh-seconds">00</span>
+                    </div>
+                </div>
+
+                <div class="phase-display">
+                    <div class="timer-count" id="wh-timer">30</div>
+                    <div class="phase-text" id="wh-phase">Подготовьтесь</div>
+                </div>
+
+                <div style="width: 100%;">
+                    <div class="cycles-info">
+                        <span id="wh-current-breath">0</span> / <span id="wh-total-breaths">0</span> вдохов
+                        | Раунд: <span id="wh-current-round">0</span> / <span id="wh-total-rounds">0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress" id="wh-progress"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Блок с настройками -->
+            <div class="controls">
+                <div class="settings">
+                    <div class="setting-group">
+                        <label for="wh-inhalation-length">Продолжительность вдоха (сек):</label>
+                        <div class="interval-control">
+                            <button id="decrease-inhalation" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-inhalation-length" min="1" max="10" value="1.5" step="0.5">
+                            <button id="increase-inhalation" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="wh-exhalation-length">Продолжительность выдоха (сек):</label>
+                        <div class="interval-control">
+                            <button id="decrease-exhalation" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-exhalation-length" min="1" max="10" value="2" step="0.5">
+                            <button id="increase-exhalation" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="setting-group">
+                        <label for="wh-breaths-count">Количество вдохов перед задержкой:</label>
+                        <div class="interval-control">
+                            <button id="decrease-breaths" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-breaths-count" min="20" max="50" value="30">
+                            <button id="increase-breaths" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+
+                    <div class="setting-group">
+                        <label for="wh-rounds">Количество раундов:</label>
+                        <div class="interval-control">
+                            <button id="decrease-rounds" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-rounds" min="1" max="10" value="3">
+                            <button id="increase-rounds" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Новая настройка: время задержки дыхания -->
+                    <div class="setting-group">
+                        <label for="wh-hold-time">Время задержки дыхания (секунды):</label>
+                        <div class="interval-control">
+                            <button id="decrease-hold-time" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-hold-time" min="0" max="300" value="0" step="1">
+                            <button id="increase-hold-time" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div class="setting-hint">0 = без ограничения (до нажатия)</div>
+                    </div>
+
+                    <!-- Новая настройка: время вдоха после задержки -->
+                    <div class="setting-group">
+                        <label for="wh-recovery-inhale-time">Вдох после задержки (секунды):</label>
+                        <div class="interval-control">
+                            <button id="decrease-recovery-inhale" class="btn-circle">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="wh-recovery-inhale-time" min="1" max="30" value="18" step="1">
+                            <button id="increase-recovery-inhale" class="btn-circle">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="setting-group">
+                        <label for="wh-preparation-time">Подготовка (секунды):</label>
+                        <input type="number" id="wh-preparation-time" min="0" max="30" value="3">
+                    </div>
+
+
+                    <div class="setting-group">
+                        <label>Звуки:</label>
+                        <div class="sound-toggles">
+                            <button id="wh-toggle-phase-sounds" class="btn sound-btn active">
+                                <i class="fas fa-volume-up"></i> Звуки фаз
+                            </button>
+                            <button id="wh-toggle-background" class="btn sound-btn">
+                                <i class="fas fa-music"></i> Фоновая музыка
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cycle-info">
+                    <p>Цикл: <span id="wh-cycle-duration">6 мин 45 сек</span></p>
+                    <p class="cycle-formula">
+                        <span id="wh-inhalation-value">1.5</span>с (вдох) +
+                        <span id="wh-exhalation-value">2</span>с (выдох) ×
+                        <span id="wh-breaths-value">30</span> подходов +
+                        <span id="wh-hold-value">90</span>с (задержка) +
+                        <span id="wh-recovery-value">15</span>с (восст. вдох)
+                    </p>
+                    <p>Полная сессия (<span id="wh-rounds-value">3</span> раунда): <span id="wh-session-duration">20
+                            мин 15 сек</span></p>
+                </div>
+                <div class="action-buttons">
+                    <button id="wh-start-btn" class="btn primary">Начать</button>
+                    <button id="wh-pause-btn" class="btn" disabled>Пауза</button>
+                    <button id="wh-stop-btn" class="btn" disabled>Стоп</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Вкладка "Рекомендации" -->
         <div id="recommendations" class="tab-content">
             <div class="breathing-box">
-                <h2>Рекомендации по практике</h2>
-
-                <div class="recommendation-section">
-                    <h3>Как правильно выполнять квадратичное дыхание</h3>
-                    <ul>
-                        <li>Расположитесь в удобном положении сидя или лежа, с прямой спиной</li>
-                        <li>Начинайте с глубокого вдоха через нос, наполняя сначала нижние отделы лёгких (живот), затем
-                            среднюю
-                            и верхнюю часть</li>
-                        <li>На задержке сохраняйте спокойствие, не напрягайтесь</li>
-                        <li>Выдыхайте медленно через рот или нос, полностью освобождая лёгкие</li>
-                        <li>Практикуйте в тихом месте, где вас не побеспокоят</li>
-                        <li>Дышите естественно, без избыточного напряжения</li>
-                    </ul>
+                <!-- Добавляем выбор техники дыхания для рекомендаций -->
+                <div class="technique-selector">
+                    <label for="technique-select">Выберите технику для просмотра рекомендаций:</label>
+                    <select id="technique-select" class="technique-dropdown">
+                        <option value="box-breathing">Квадратичное дыхание</option>
+                        <option value="wim-hof">Метод Вима Хофа</option>
+                    </select>
                 </div>
 
-                <div class="recommendation-section">
-                    <h3>Как наращивать практику</h3>
-                    <ul>
-                        <li>Начинайте с интервала 4-5 секунд и сессий по 5-10 минут</li>
-                        <li>Постепенно увеличивайте продолжительность фаз на 1-2 секунды каждую неделю</li>
-                        <li>Со временем можно достичь интервалов 15-20 секунд (опытные практики)</li>
-                        <li>Увеличивайте продолжительность сессий до 15-30 минут</li>
-                        <li>Практикуйте регулярно — лучше ежедневно по 10 минут, чем раз в неделю по 30</li>
-                        <li>Отслеживайте прогресс, отмечая, как меняются ваши ощущения со временем</li>
-                    </ul>
+                <!-- Рекомендации для квадратичного дыхания (существующие) -->
+                <div id="box-breathing-recommendations" class="technique-content active">
+                    <h2>Рекомендации по квадратичному дыханию</h2>
+
+                    <div class="recommendation-section">
+                        <h3>Как правильно выполнять квадратичное дыхание</h3>
+                        <ul>
+                            <li>Расположитесь в удобном положении сидя или лежа, с прямой спиной</li>
+                            <li>Начинайте с глубокого вдоха через нос, наполняя сначала нижние отделы лёгких
+                                (живот), затем
+                                среднюю
+                                и верхнюю часть</li>
+                            <li>На задержке сохраняйте спокойствие, не напрягайтесь</li>
+                            <li>Выдыхайте медленно через рот или нос, полностью освобождая лёгкие</li>
+                            <li>Практикуйте в тихом месте, где вас не побеспокоят</li>
+                            <li>Дышите естественно, без избыточного напряжения</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendation-section">
+                        <h3>Как наращивать практику</h3>
+                        <ul>
+                            <li>Начинайте с интервала 4-5 секунд и сессий по 5-10 минут</li>
+                            <li>Постепенно увеличивайте продолжительность фаз на 1-2 секунды каждую неделю</li>
+                            <li>Со временем можно достичь интервалов 15-20 секунд (опытные практики)</li>
+                            <li>Увеличивайте продолжительность сессий до 15-30 минут</li>
+                            <li>Практикуйте регулярно — лучше ежедневно по 10 минут, чем раз в неделю по 30</li>
+                            <li>Отслеживайте прогресс, отмечая, как меняются ваши ощущения со временем</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendation-section">
+                        <h3>Этапы освоения практики</h3>
+                        <ol>
+                            <li><strong>Ознакомление (1-2 недели)</strong>: привыкание к технике, короткие интервалы
+                                4-6
+                                секунд</li>
+                            <li><strong>Начальный (2-4 недели)</strong>: увеличение интервалов до 6-8 секунд, сессии
+                                по
+                                10-15 минут
+                            </li>
+                            <li><strong>Средний (1-3 месяца)</strong>: стабильная практика с интервалами 8-10
+                                секунд,
+                                заметное
+                                улучшение контроля дыхания</li>
+                            <li><strong>Продвинутый (3+ месяцев)</strong>: интервалы 10-15 секунд, глубокая
+                                концентрация,
+                                сессии до
+                                30 минут</li>
+                            <li><strong>Мастерство (6+ месяцев)</strong>: интервалы 15-20+ секунд, способность
+                                быстро
+                                входить в
+                                состояние глубокого расслабления</li>
+                        </ol>
+                    </div>
+
+                    <div class="recommendation-section">
+                        <h3>Чего нельзя делать</h3>
+                        <ul>
+                            <li>Задерживать дыхание до дискомфорта или головокружения</li>
+                            <li>Практиковать сразу после еды (подождите минимум 2 часа)</li>
+                            <li>Форсировать прогресс, резко увеличивая интервалы</li>
+                            <li>Напрягать мышцы шеи, плеч или живота</li>
+                            <li>Дышать преимущественно грудью (исключая верхнее дыхание)</li>
+                            <li>Практиковать при острых заболеваниях или высоком давлении</li>
+                            <li>Продолжать практику при появлении дискомфорта или неприятных ощущений</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendation-section">
+                        <h3>Возможные эффекты и ощущения</h3>
+                        <ul>
+                            <li><strong>Начальные ощущения</strong>: покалывание в конечностях, лёгкое
+                                головокружение,
+                                прилив тепла
+                            </li>
+                            <li><strong>Со временем</strong>: глубокое расслабление, ясность ума, снижение
+                                тревожности</li>
+                            <li><strong>Физиологические эффекты</strong>: замедление сердечного ритма, снижение
+                                артериального
+                                давления, активация парасимпатической нервной системы</li>
+                            <li><strong>Психологические эффекты</strong>: улучшение концентрации, уменьшение
+                                стресса,
+                                повышение
+                                самоконтроля</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendation-section">
+                        <h3>Типичные трудности и их решение</h3>
+                        <ul>
+                            <li><strong>Трудно сосредоточиться</strong>: используйте фоновую музыку, практикуйте в
+                                тихом
+                                месте,
+                                фокусируйтесь на счёте</li>
+                            <li><strong>Сбивается дыхательный ритм</strong>: используйте визуальную анимацию,
+                                начинайте с
+                                более
+                                коротких интервалов</li>
+                            <li><strong>Дискомфорт при задержке дыхания</strong>: уменьшите продолжительность
+                                задержки,
+                                постепенно
+                                увеличивайте со временем</li>
+                            <li><strong>Сонливость</strong>: практикуйте в более бодрственном состоянии, сидя с
+                                прямой
+                                спиной</li>
+                            <li><strong>Кашель/першение</strong>: увлажните воздух, пейте воду перед практикой</li>
+                        </ul>
+                    </div>
+
+                    <div class="recommendation-section warning">
+                        <h3>Важные предупреждения</h3>
+                        <p>Проконсультируйтесь с врачом перед началом практики, если у вас есть:</p>
+                        <ul>
+                            <li>Сердечно-сосудистые заболевания</li>
+                            <li>Высокое или низкое артериальное давление</li>
+                            <li>Заболевания дыхательной системы (астма, ХОБЛ)</li>
+                            <li>Эпилепсия</li>
+                            <li>Беременность</li>
+                            <li>Глаукома или повышенное внутриглазное давление</li>
+                        </ul>
+                        <p>Немедленно прекратите практику при появлении:</p>
+                        <ul>
+                            <li>Головокружения или обморочного состояния</li>
+                            <li>Учащенного или нерегулярного сердцебиения</li>
+                            <li>Болей в груди или затрудненного дыхания</li>
+                            <li>Тревоги или панических ощущений</li>
+                        </ul>
+                    </div>
                 </div>
 
+            </div>
+
+            <!-- Рекомендации для метода Вима Хофа (новые) -->
+            <div id="wim-hof-recommendations" class="technique-content">
+                <h2>Метод Вима Хофа: рекомендации по практике</h2>
+
                 <div class="recommendation-section">
-                    <h3>Этапы освоения практики</h3>
+                    <h3>Что такое метод Вима Хофа</h3>
+                    <p>Метод Вима Хофа (или «Ледяного человека») — это техника, сочетающая специальное дыхание,
+                        холодовую терапию и медитацию для улучшения физического и психического здоровья. Дыхательная
+                        часть метода включает гипервентиляцию и продолжительную задержку дыхания.</p>
+                    <p>Основные этапы метода:</p>
                     <ol>
-                        <li><strong>Ознакомление (1-2 недели)</strong>: привыкание к технике, короткие интервалы 4-6
-                            секунд</li>
-                        <li><strong>Начальный (2-4 недели)</strong>: увеличение интервалов до 6-8 секунд, сессии по
-                            10-15 минут
-                        </li>
-                        <li><strong>Средний (1-3 месяца)</strong>: стабильная практика с интервалами 8-10 секунд,
-                            заметное
-                            улучшение контроля дыхания</li>
-                        <li><strong>Продвинутый (3+ месяцев)</strong>: интервалы 10-15 секунд, глубокая концентрация,
-                            сессии до
-                            30 минут</li>
-                        <li><strong>Мастерство (6+ месяцев)</strong>: интервалы 15-20+ секунд, способность быстро
-                            входить в
-                            состояние глубокого расслабления</li>
+                        <li>Серия глубоких вдохов и контролируемых выдохов (гипервентиляция)</li>
+                        <li>Длительная задержка дыхания после полного выдоха</li>
+                        <li>Восстановительный глубокий вдох с короткой задержкой</li>
+                        <li>Повторение цикла несколько раз</li>
                     </ol>
                 </div>
 
                 <div class="recommendation-section">
-                    <h3>Чего нельзя делать</h3>
+                    <h3>Как правильно выполнять метод Вима Хофа</h3>
                     <ul>
-                        <li>Задерживать дыхание до дискомфорта или головокружения</li>
-                        <li>Практиковать сразу после еды (подождите минимум 2 часа)</li>
-                        <li>Форсировать прогресс, резко увеличивая интервалы</li>
-                        <li>Напрягать мышцы шеи, плеч или живота</li>
-                        <li>Дышать преимущественно грудью (исключая верхнее дыхание)</li>
-                        <li>Практиковать при острых заболеваниях или высоком давлении</li>
-                        <li>Продолжать практику при появлении дискомфорта или неприятных ощущений</li>
-                    </ul>
-                </div>
-
-                <div class="recommendation-section">
-                    <h3>Возможные эффекты и ощущения</h3>
-                    <ul>
-                        <li><strong>Начальные ощущения</strong>: покалывание в конечностях, лёгкое головокружение,
-                            прилив тепла
+                        <li>Найдите удобное положение сидя или лежа, где вы можете расслабиться</li>
+                        <li>Дышите через рот или нос во время быстрых вдохов</li>
+                        <li>Во время серии дыхательных циклов не форсируйте выдох, позвольте выдоху происходить
+                            естественно</li>
+                        <li>После серии вдохов-выдохов полностью выдохните и задержите дыхание до ощущения сильной
+                            потребности вдохнуть</li>
+                        <li>После задержки сделайте восстановительный глубокий вдох и задержите дыхание на 15 секунд
                         </li>
-                        <li><strong>Со временем</strong>: глубокое расслабление, ясность ума, снижение тревожности</li>
-                        <li><strong>Физиологические эффекты</strong>: замедление сердечного ритма, снижение
-                            артериального
-                            давления, активация парасимпатической нервной системы</li>
-                        <li><strong>Психологические эффекты</strong>: улучшение концентрации, уменьшение стресса,
-                            повышение
-                            самоконтроля</li>
+                        <li>Повторите весь цикл 3-4 раза</li>
                     </ul>
                 </div>
 
                 <div class="recommendation-section">
-                    <h3>Типичные трудности и их решение</h3>
+                    <h3>Физиологические эффекты</h3>
                     <ul>
-                        <li><strong>Трудно сосредоточиться</strong>: используйте фоновую музыку, практикуйте в тихом
-                            месте,
-                            фокусируйтесь на счёте</li>
-                        <li><strong>Сбивается дыхательный ритм</strong>: используйте визуальную анимацию, начинайте с
-                            более
-                            коротких интервалов</li>
-                        <li><strong>Дискомфорт при задержке дыхания</strong>: уменьшите продолжительность задержки,
-                            постепенно
-                            увеличивайте со временем</li>
-                        <li><strong>Сонливость</strong>: практикуйте в более бодрственном состоянии, сидя с прямой
-                            спиной</li>
-                        <li><strong>Кашель/першение</strong>: увлажните воздух, пейте воду перед практикой</li>
+                        <li><strong>Изменение pH крови</strong>: во время гипервентиляции уровень CO₂ снижается,
+                            повышая pH крови (алкалоз)</li>
+                        <li><strong>Высвобождение адреналина</strong>: практика вызывает выброс адреналина,
+                            повышающего энергию и концентрацию</li>
+                        <li><strong>Влияние на иммунную систему</strong>: регулярная практика может усиливать
+                            иммунный ответ</li>
+                        <li><strong>Улучшение кислородного обмена</strong>: повышение кислородонасыщения тканей</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation-section">
+                    <h3>Рекомендации по практике</h3>
+                    <ul>
+                        <li>Начинайте с 30 дыхательных циклов и постепенно увеличивайте до 40-50</li>
+                        <li>На начальных этапах задерживайте дыхание столько, сколько комфортно, постепенно
+                            увеличивая время</li>
+                        <li>Не практикуйте под водой или в ситуациях, где потеря сознания может быть опасна</li>
+                        <li>Лучшее время для практики — утром или за 2-3 часа до сна</li>
+                        <li>Первое время занимайтесь под руководством опытного инструктора или следуя официальным
+                            материалам</li>
+                    </ul>
+                </div>
+
+                <div class="recommendation-section">
+                    <h3>Ожидаемые ощущения во время практики</h3>
+                    <ul>
+                        <li>Покалывание в теле (особенно в конечностях)</li>
+                        <li>Лёгкое головокружение или ощущение "плавания"</li>
+                        <li>Мышечные спазмы или подергивания (не вызывающие беспокойства)</li>
+                        <li>Ощущение тепла или холода</li>
+                        <li>Эмоциональные высвобождения (эйфория, слезы)</li>
+                        <li>Временное изменение восприятия</li>
                     </ul>
                 </div>
 
                 <div class="recommendation-section warning">
                     <h3>Важные предупреждения</h3>
-                    <p>Проконсультируйтесь с врачом перед началом практики, если у вас есть:</p>
+                    <p>Метод Вима Хофа может быть противопоказан при следующих состояниях:</p>
                     <ul>
-                        <li>Сердечно-сосудистые заболевания</li>
-                        <li>Высокое или низкое артериальное давление</li>
-                        <li>Заболевания дыхательной системы (астма, ХОБЛ)</li>
+                        <li>Сердечно-сосудистые заболевания (особенно аритмии)</li>
                         <li>Эпилепсия</li>
+                        <li>Повышенное внутричерепное давление</li>
                         <li>Беременность</li>
-                        <li>Глаукома или повышенное внутриглазное давление</li>
+                        <li>История инсультов или аневризмов</li>
+                        <li>Серьезные заболевания дыхательной системы</li>
+                        <li>Психические расстройства (особенно биполярное расстройство)</li>
                     </ul>
-                    <p>Немедленно прекратите практику при появлении:</p>
+                    <p><strong>НИКОГДА НЕ ПРАКТИКУЙТЕ:</strong></p>
                     <ul>
-                        <li>Головокружения или обморочного состояния</li>
-                        <li>Учащенного или нерегулярного сердцебиения</li>
-                        <li>Болей в груди или затрудненного дыхания</li>
-                        <li>Тревоги или панических ощущений</li>
+                        <li>Во время вождения или управления механизмами</li>
+                        <li>Под водой или в местах, где потеря сознания опасна</li>
+                        <li>В состоянии алкогольного или наркотического опьянения</li>
+                        <li>При наличии высокой температуры или острых воспалительных процессов</li>
                     </ul>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Аудио элементы -->
@@ -748,6 +1054,17 @@
     </audio>
     <audio id="background-sound" loop preload="auto">
         <source src="sounds/background.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="hold-long-sound" preload="auto">
+        <source src="sounds/zvon.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="recovery-breath-sound" preload="auto">
+        <source src="sounds/vdoh.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="completion-sound" preload="auto">
+        <source src="sounds/end.m4a" type="audio/mpeg">
     </audio>
 
     <script>
@@ -781,7 +1098,7 @@
             const holdSound = document.getElementById('hold-sound');
             const exhaleSound = document.getElementById('exhale-sound');
             const backgroundSound = document.getElementById('background-sound');
-
+            const completionSound = document.getElementById('completion-sound');
             // Состояние приложения
             const state = {
                 isRunning: false,
@@ -859,13 +1176,18 @@
 
             // Обработка клавиш клавиатуры
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') {
-                    changeInterval(-1);
-                } else if (e.key === 'ArrowRight') {
-                    changeInterval(1);
+                // Определяем активную вкладку
+                const activeTab = document.querySelector('.tab-content.active').id;
+
+                if (activeTab === 'practice') {
+                    // Для квадратичного дыхания
+                    if (e.key === 'ArrowLeft') {
+                        changeInterval(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        changeInterval(1);
+                    }
                 }
             });
-
 
             // Функции
             function loadSettings() {
@@ -1048,13 +1370,21 @@
                 backgroundSound.pause();
                 backgroundSound.currentTime = 0;
 
+                // Воспроизведение звука завершения
+                if (state.phaseSoundsEnabled) {
+                    completionSound.play();
+                }
+
                 // Сброс состояния
                 state.currentPhase = 'prep';
                 state.currentTime = state.preparationTime;
-
                 state.currentCycle = 0;
                 state.totalCycles = 0;
+
+                // Убедимся, что все элементы интерфейса обновлены
                 updateCyclesDisplay();
+                timerCount.textContent = state.preparationTime;
+                phaseText.textContent = 'Подготовьтесь';
 
                 // Обновление кнопок
                 startBtn.disabled = false;
@@ -1066,7 +1396,6 @@
                 updateDisplay();
                 updateRemainingTimeDisplay();
                 progressBar.style.width = '0%';
-
             }
 
             function updatePhase() {
@@ -1097,11 +1426,6 @@
                             state.currentPhase = 'hold2';
                             playPhaseSound('hold');
                             state.phaseCounter = 4;
-                            break;
-                        case 'hold2':
-                            state.currentPhase = 'inhale';
-                            playPhaseSound('inhale');
-                            state.phaseCounter = 1;
                             // Завершен полный цикл
                             state.currentCycle++;
                             updateCyclesDisplay();
@@ -1213,7 +1537,653 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Элементы интерфейса для метода Вима Хофа
+            const whTimer = document.getElementById('wh-timer');
+            const whPhase = document.getElementById('wh-phase');
+            const whMinutesDisplay = document.getElementById('wh-minutes');
+            const whSecondsDisplay = document.getElementById('wh-seconds');
+            const whProgressBar = document.getElementById('wh-progress');
+            const whCurrentBreathDisplay = document.getElementById('wh-current-breath');
+            const whTotalBreathsDisplay = document.getElementById('wh-total-breaths');
+            const whCurrentRoundDisplay = document.getElementById('wh-current-round');
+            const whTotalRoundsDisplay = document.getElementById('wh-total-rounds');
 
+            // Кнопки управления
+            const whStartBtn = document.getElementById('wh-start-btn');
+            const whPauseBtn = document.getElementById('wh-pause-btn');
+            const whStopBtn = document.getElementById('wh-stop-btn');
+            const decreaseInhalationBtn = document.getElementById('decrease-inhalation');
+            const increaseInhalationBtn = document.getElementById('increase-inhalation');
+            const decreaseExhalationBtn = document.getElementById('decrease-exhalation');
+            const increaseExhalationBtn = document.getElementById('increase-exhalation');
+            const decreaseBreathsBtn = document.getElementById('decrease-breaths');
+            const increaseBreathsBtn = document.getElementById('increase-breaths');
+            const decreaseRoundsBtn = document.getElementById('decrease-rounds');
+            const increaseRoundsBtn = document.getElementById('increase-rounds');
+            const whTogglePhaseSoundsBtn = document.getElementById('wh-toggle-phase-sounds');
+            const whToggleBackgroundBtn = document.getElementById('wh-toggle-background');
+
+            const decreaseHoldTimeBtn = document.getElementById('decrease-hold-time');
+            const increaseHoldTimeBtn = document.getElementById('increase-hold-time');
+            const decreaseRecoveryInhaleBtn = document.getElementById('decrease-recovery-inhale');
+            const increaseRecoveryInhaleBtn = document.getElementById('increase-recovery-inhale');
+
+            // Поля ввода
+            const inhalationLengthInput = document.getElementById('wh-inhalation-length');
+            const exhalationLengthInput = document.getElementById('wh-exhalation-length');
+            const breathsCountInput = document.getElementById('wh-breaths-count');
+            const roundsInput = document.getElementById('wh-rounds');
+            const whPreparationTimeInput = document.getElementById('wh-preparation-time');
+            const holdTimeInput = document.getElementById('wh-hold-time');
+            const recoveryInhaleTimeInput = document.getElementById('wh-recovery-inhale-time');
+
+            // Аудио элементы (используем существующие и новые)
+            const inhaleSound = document.getElementById('inhale-sound');
+            const exhaleSound = document.getElementById('exhale-sound');
+            const holdLongSound = document.getElementById('hold-long-sound');
+            const recoveryBreathSound = document.getElementById('recovery-breath-sound');
+            const backgroundSound = document.getElementById('background-sound');
+            const completionSound = document.getElementById('completion-sound');
+
+            // Состояние приложения для метода Вима Хофа
+            const whState = {
+                isRunning: false,
+                isPaused: false,
+                currentPhase: 'prep', // prep, inhale, exhale, hold, recovery
+                currentTime: 0,
+                inhalationLength: 1.5,
+                exhalationLength: 2,
+                breathsCount: 30,
+                rounds: 3,
+                preparationTime: 10,
+                currentBreath: 0,
+                currentRound: 0,
+                phaseSoundsEnabled: true,
+                backgroundSoundEnabled: false,
+                timerId: null,
+                sessionStartTime: 0,
+                sessionDuration: 0,
+                holdTime: 0, // 0 означает без ограничения (до нажатия)
+                recoveryInhaleTime: 15 // время вдоха после задержки
+            };
+
+            // Загрузка сохраненных настроек
+            loadWhSettings();
+
+            // Функция загрузки настроек для метода Вима Хофа
+            function loadWhSettings() {
+                const savedSettings = JSON.parse(localStorage.getItem('wimHofSettings'));
+                if (savedSettings) {
+                    whState.inhalationLength = savedSettings.inhalationLength ?? 1.5;
+                    whState.exhalationLength = savedSettings.exhalationLength ?? 2;
+                    whState.breathsCount = savedSettings.breathsCount ?? 30;
+                    whState.rounds = savedSettings.rounds ?? 3;
+                    whState.preparationTime = savedSettings.preparationTime ?? 10;
+                    whState.phaseSoundsEnabled = savedSettings.phaseSoundsEnabled ?? true;
+                    whState.backgroundSoundEnabled = savedSettings.backgroundSoundEnabled ?? false;
+                    whState.holdTime = savedSettings.holdTime ?? 0;
+                    whState.recoveryInhaleTime = savedSettings.recoveryInhaleTime ?? 15;
+
+                    // Обновляем текущее время для отображения
+                    whState.currentTime = whState.preparationTime;
+
+                    // Обновление полей ввода
+                    inhalationLengthInput.value = whState.inhalationLength;
+                    exhalationLengthInput.value = whState.exhalationLength;
+                    breathsCountInput.value = whState.breathsCount;
+                    roundsInput.value = whState.rounds;
+                    whPreparationTimeInput.value = whState.preparationTime;
+                    holdTimeInput.value = whState.holdTime;
+                    recoveryInhaleTimeInput.value = whState.recoveryInhaleTime;
+
+                    // Обновление кнопок звука
+                    whTogglePhaseSoundsBtn.classList.toggle('active', whState.phaseSoundsEnabled);
+                    whToggleBackgroundBtn.classList.toggle('active', whState.backgroundSoundEnabled);
+                }
+
+                updateWhDisplay();
+            }
+
+            // Функция сохранения настроек для метода Вима Хофа
+            function saveWhSettings() {
+                const settings = {
+                    inhalationLength: whState.inhalationLength,
+                    exhalationLength: whState.exhalationLength,
+                    breathsCount: whState.breathsCount,
+                    rounds: whState.rounds,
+                    preparationTime: whState.preparationTime,
+                    phaseSoundsEnabled: whState.phaseSoundsEnabled,
+                    backgroundSoundEnabled: whState.backgroundSoundEnabled,
+                    holdTime: whState.holdTime,
+                    recoveryInhaleTime: whState.recoveryInhaleTime
+                };
+                localStorage.setItem('wimHofSettings', JSON.stringify(settings));
+            }
+
+            // Обработчики событий для метода Вима Хофа
+            whStartBtn.addEventListener('click', startWimHof);
+            whPauseBtn.addEventListener('click', toggleWimHofPause);
+            whStopBtn.addEventListener('click', stopWimHof);
+
+            decreaseInhalationBtn.addEventListener('click', () => changeInhalation(-0.5));
+            increaseInhalationBtn.addEventListener('click', () => changeInhalation(0.5));
+
+            decreaseExhalationBtn.addEventListener('click', () => changeExhalation(-0.5));
+            increaseExhalationBtn.addEventListener('click', () => changeExhalation(0.5));
+
+            decreaseBreathsBtn.addEventListener('click', () => changeBreaths(-5));
+            increaseBreathsBtn.addEventListener('click', () => changeBreaths(5));
+
+            decreaseRoundsBtn.addEventListener('click', () => changeRounds(-1));
+            increaseRoundsBtn.addEventListener('click', () => changeRounds(1));
+
+            whTogglePhaseSoundsBtn.addEventListener('click', toggleWimHofPhaseSounds);
+            whToggleBackgroundBtn.addEventListener('click', toggleWimHofBackgroundSound);
+
+            decreaseHoldTimeBtn.addEventListener('click', () => changeHoldTime(-1));
+            increaseHoldTimeBtn.addEventListener('click', () => changeHoldTime(1));
+            decreaseRecoveryInhaleBtn.addEventListener('click', () => changeRecoveryInhaleTime(-1));
+            increaseRecoveryInhaleBtn.addEventListener('click', () => changeRecoveryInhaleTime(1));
+
+            inhalationLengthInput.addEventListener('change', () => {
+                whState.inhalationLength = parseFloat(inhalationLengthInput.value);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            });
+
+            exhalationLengthInput.addEventListener('change', () => {
+                whState.exhalationLength = parseFloat(exhalationLengthInput.value);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            });
+
+            breathsCountInput.addEventListener('change', () => {
+                whState.breathsCount = parseInt(breathsCountInput.value);
+                saveWhSettings();
+                updateWhTotalBreaths();
+                updateWimHofCycleSummary();
+            });
+
+            roundsInput.addEventListener('change', () => {
+                whState.rounds = parseInt(roundsInput.value);
+                saveWhSettings();
+                updateWhTotalRounds();
+                updateWimHofCycleSummary();
+            });
+
+            whPreparationTimeInput.addEventListener('change', () => {
+                whState.preparationTime = parseInt(whPreparationTimeInput.value);
+                saveWhSettings();
+            });
+
+            holdTimeInput.addEventListener('change', () => {
+                whState.holdTime = parseInt(holdTimeInput.value);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            });
+
+            recoveryInhaleTimeInput.addEventListener('change', () => {
+                whState.recoveryInhaleTime = parseInt(recoveryInhaleTimeInput.value);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            });
+
+
+            document.addEventListener('keydown', (e) => {
+                // Определяем активную вкладку
+                const activeTab = document.querySelector('.tab-content.active').id;
+
+                if (activeTab === 'wim-hof') {
+                    // Для метода Вима Хофа - изменяем одновременно вдох и выдох
+                    if (e.key === 'ArrowLeft') {
+                        // Уменьшаем оба параметра
+                        changeInhalation(-1);
+                        changeExhalation(-1);
+                    } else if (e.key === 'ArrowRight') {
+                        // Увеличиваем оба параметра
+                        changeInhalation(1);
+                        changeExhalation(1);
+                    }
+                }
+            });
+            // Функции для управления методом Вима Хофа
+            function startWimHof() {
+                if (whState.isRunning && !whState.isPaused) return;
+
+                if (!whState.isPaused) {
+                    // Новая сессия
+                    whState.currentPhase = 'prep';
+                    whState.currentTime = whState.preparationTime;
+                    whState.currentBreath = 0;
+                    whState.currentRound = 1;
+                    whState.sessionStartTime = Date.now();
+
+                    updateWhTotalBreaths();
+                    updateWhTotalRounds();
+                }
+
+                whState.isRunning = true;
+                whState.isPaused = false;
+
+                // Обновление кнопок
+                whStartBtn.disabled = true;
+                whPauseBtn.disabled = false;
+                whStopBtn.disabled = false;
+
+                // Запуск фоновой музыки если нужно
+                if (whState.backgroundSoundEnabled) {
+                    backgroundSound.play();
+                }
+
+                // Запуск таймера
+                if (!whState.timerId) {
+                    updateWhPhase();
+                    whState.timerId = setInterval(updateWhPhase, 100); // Используем 100мс для более точного отсчета дробных секунд
+                }
+            }
+
+            function toggleWimHofPause() {
+                if (!whState.isRunning) return;
+
+                whState.isPaused = !whState.isPaused;
+
+                if (whState.isPaused) {
+                    whPauseBtn.textContent = 'Продолжить';
+                    clearInterval(whState.timerId);
+                    whState.timerId = null;
+
+                    if (whState.backgroundSoundEnabled) {
+                        backgroundSound.pause();
+                    }
+                } else {
+                    whPauseBtn.textContent = 'Пауза';
+                    whState.timerId = setInterval(updateWhPhase, 100);
+
+                    if (whState.backgroundSoundEnabled) {
+                        backgroundSound.play();
+                    }
+                }
+            }
+
+
+            function updateWhPhase() {
+                // Уменьшаем счетчик текущей фазы
+                whState.currentTime -= 0.1;
+
+                // Обновление времени сессии
+                updateWhSessionTime();
+
+                // Обновляем прогресс-бар в зависимости от текущей фазы
+                updateWhProgressBar();
+
+                // Играем дополнительный звук за 3 секунды до конца восстановительной фазы
+                if (whState.currentPhase === 'recovery' && 
+                    Math.abs(whState.currentTime - 3) < 0.05 && 
+                    whState.phaseSoundsEnabled) {
+                    inhaleSound.currentTime = 0;
+                    inhaleSound.play();
+                }
+
+                if (whState.currentTime <= 0) {
+                    // Переходим к следующей фазе
+                    moveToNextWhPhase();
+                }
+
+                updateWhDisplay();
+            }
+
+            function updateWhProgressBar() {
+                if (whState.currentPhase === 'inhale' || whState.currentPhase === 'exhale') {
+                    const totalBreathCycleTime = whState.inhalationLength + whState.exhalationLength;
+                    const currentPhaseMaxTime = whState.currentPhase === 'inhale' ?
+                        whState.inhalationLength : whState.exhalationLength;
+                    const currentPhaseElapsed = currentPhaseMaxTime - whState.currentTime;
+                    const progress = Math.min(100, Math.max(0, (currentPhaseElapsed / currentPhaseMaxTime) * 100));
+                    whProgressBar.style.width = `${progress}%`;
+                } else if (whState.currentPhase === 'prep') {
+                    const progress = Math.min(100, Math.max(0,
+                        ((whState.preparationTime - whState.currentTime) / whState.preparationTime) * 100));
+                    whProgressBar.style.width = `${progress}%`;
+                } else if (whState.currentPhase === 'recovery') {
+                    const progress = Math.min(100, Math.max(0, ((whState.recoveryInhaleTime - whState.currentTime) / whState.recoveryInhaleTime) * 100));
+                    whProgressBar.style.width = `${progress}%`;
+                } else if (whState.currentPhase === 'hold') {
+                    if (whState.holdTime > 0) {
+                        // Если задано конкретное время задержки, показываем прогресс
+                        const elapsedTime = whState.holdTime - whState.currentTime;
+                        const progress = Math.min(100, Math.max(0, (elapsedTime / whState.holdTime) * 100));
+                        whProgressBar.style.width = `${progress}%`;
+                    } else {
+                        // Если задержка без ограничения (до нажатия),
+                        // оставляем пустой прогресс-бар или можно добавить пульсирующую анимацию
+                        whProgressBar.style.width = '0%';
+                    }
+                }
+            }
+
+            function moveToNextWhPhase() {
+                if (whState.currentPhase === 'prep') {
+                    whState.currentPhase = 'inhale';
+                    whState.currentTime = whState.inhalationLength;
+                    playWhPhaseSound('inhale');
+                } else if (whState.currentPhase === 'inhale') {
+                    whState.currentPhase = 'exhale';
+                    whState.currentTime = whState.exhalationLength;
+                    playWhPhaseSound('exhale');
+                    whState.currentBreath++;
+                    updateWhBreathDisplay();
+                } else if (whState.currentPhase === 'exhale') {
+                    // Проверяем, достигли ли мы нужного количества вдохов
+                    if (whState.currentBreath >= whState.breathsCount) {
+                        whState.currentPhase = 'hold';
+                        whState.currentTime = whState.holdTime === 0 ? Infinity : whState.holdTime;
+                        playWhPhaseSound('hold-long');
+                    } else {
+                        whState.currentPhase = 'inhale';
+                        whState.currentTime = whState.inhalationLength;
+                        playWhPhaseSound('inhale');
+                    }
+                } else if (whState.currentPhase === 'hold') {
+                    whState.currentPhase = 'recovery';
+                    whState.currentTime = whState.recoveryInhaleTime;
+                    playWhPhaseSound('recovery');
+                } else if (whState.currentPhase === 'recovery') {
+                    // Проверяем, не последний ли это раунд ПЕРЕД увеличением счетчика
+                    if (whState.currentRound >= whState.rounds) {
+                        stopWimHof();
+                        return;
+                    }
+
+                    whState.currentRound++;
+                    updateWhRoundDisplay();
+
+                    whState.currentPhase = 'inhale';
+                    whState.currentTime = whState.inhalationLength;
+                    whState.currentBreath = 0;
+                    playWhPhaseSound('inhale');
+                    updateWhBreathDisplay();
+                }
+
+                // Сброс прогресс-бара при переходе к новой фазе
+                whProgressBar.style.width = '0%';
+            }
+
+            function stopWimHof() {
+                whState.isRunning = false;
+                whState.isPaused = false;
+
+                // Остановка таймера
+                clearInterval(whState.timerId);
+                whState.timerId = null;
+
+                // Остановка звуков
+                inhaleSound.pause();
+                inhaleSound.currentTime = 0;
+                exhaleSound.pause();
+                exhaleSound.currentTime = 0;
+                holdLongSound.pause();
+                holdLongSound.currentTime = 0;
+                recoveryBreathSound.pause();
+                recoveryBreathSound.currentTime = 0;
+                backgroundSound.pause();
+                backgroundSound.currentTime = 0;
+
+                // Воспроизведение звука завершения
+                if (whState.phaseSoundsEnabled) {
+                    completionSound.play();
+                }
+
+                // Сброс состояния
+                whState.currentPhase = 'prep';
+                whState.currentTime = whState.preparationTime;
+                whState.currentBreath = 0;
+                whState.currentRound = 0;
+
+                // Обновление кнопок
+                whStartBtn.disabled = false;
+                whPauseBtn.disabled = true;
+                whPauseBtn.textContent = 'Пауза';
+                whStopBtn.disabled = true;
+
+                // Обновление всех элементов интерфейса
+                whTimer.textContent = whState.preparationTime;
+                whPhase.textContent = 'Подготовьтесь';
+                whCurrentBreathDisplay.textContent = '0';
+                whCurrentRoundDisplay.textContent = '0';
+                whProgressBar.style.width = '0%';
+
+                // Удаление обработчика клика задержки дыхания
+                document.querySelector('.breathing-box').onclick = null;
+
+                // Обновление времени сессии
+                whMinutesDisplay.textContent = '00';
+                whSecondsDisplay.textContent = '00';
+            }
+
+            function playWhPhaseSound(phase) {
+                if (!whState.phaseSoundsEnabled) return;
+
+                switch (phase) {
+                    case 'inhale':
+                        inhaleSound.currentTime = 0;
+                        inhaleSound.play();
+                        break;
+                    case 'exhale':
+                        exhaleSound.currentTime = 0;
+                        exhaleSound.play();
+                        break;
+                    case 'hold-long':
+                        holdLongSound.currentTime = 0;
+                        holdLongSound.play();
+                        break;
+                    case 'recovery':
+                        recoveryBreathSound.currentTime = 0;
+                        recoveryBreathSound.play();
+                        break;
+                }
+            }
+
+            function updateWhDisplay() {
+                let displayTime;
+                if (whState.currentPhase === 'hold' && whState.currentTime === Infinity) {
+                    displayTime = '∞';
+                } else if (whState.currentTime === Infinity) {
+                    displayTime = '∞';
+                } else {
+                    displayTime = Math.max(0, Math.ceil(whState.currentTime)).toString();
+                }
+                whTimer.textContent = displayTime;
+
+                switch (whState.currentPhase) {
+                    case 'prep':
+                        whPhase.textContent = 'Подготовьтесь';
+                        break;
+                    case 'inhale':
+                        whPhase.textContent = 'Вдох';
+                        break;
+                    case 'exhale':
+                        whPhase.textContent = 'Выдох';
+                        break;
+                    case 'hold':
+                        if (whState.holdTime === 0) {
+                            whPhase.textContent = 'Задержка дыхания (нажмите, когда готовы)';
+                            document.querySelector('.breathing-box').onclick = finishHoldPhase;
+                        } else {
+                            whPhase.textContent = 'Задержка дыхания';
+                            document.querySelector('.breathing-box').onclick = finishHoldPhase;
+                        }
+                        break;
+                    case 'recovery':
+                        whPhase.textContent = 'Восстановительное дыхание';
+                        document.querySelector('.breathing-box').onclick = null;
+                        break;
+                }
+            }
+
+            function finishHoldPhase() {
+                if (whState.isRunning && whState.currentPhase === 'hold') {
+                    whState.currentPhase = 'recovery';
+                    whState.currentTime = whState.recoveryInhaleTime;
+                    playWhPhaseSound('recovery');
+                    document.querySelector('.breathing-box').onclick = null;
+                }
+            }
+
+            function updateWhSessionTime() {
+                if (!whState.isRunning) {
+                    whMinutesDisplay.textContent = '00';
+                    whSecondsDisplay.textContent = '00';
+                    return;
+                }
+
+                const elapsedTime = Math.floor((Date.now() - whState.sessionStartTime) / 1000);
+                const minutes = Math.floor(elapsedTime / 60);
+                const seconds = elapsedTime % 60;
+                whMinutesDisplay.textContent = String(minutes).padStart(2, '0');
+                whSecondsDisplay.textContent = String(seconds).padStart(2, '0');
+            }
+
+            function updateWhBreathDisplay() {
+                whCurrentBreathDisplay.textContent = whState.currentBreath;
+            }
+
+            function updateWhRoundDisplay() {
+                whCurrentRoundDisplay.textContent = whState.currentRound;
+            }
+
+            function updateWhTotalBreaths() {
+                whTotalBreathsDisplay.textContent = whState.breathsCount;
+            }
+
+            function updateWhTotalRounds() {
+                whTotalRoundsDisplay.textContent = whState.rounds;
+            }
+
+            function changeInhalation(delta) {
+                whState.inhalationLength = Math.max(0.5, Math.min(10, whState.inhalationLength + delta));
+                inhalationLengthInput.value = whState.inhalationLength.toFixed(1);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            }
+
+            function changeExhalation(delta) {
+                whState.exhalationLength = Math.max(0.5, Math.min(10, whState.exhalationLength + delta));
+                exhalationLengthInput.value = whState.exhalationLength.toFixed(1);
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            }
+
+            function changeBreaths(delta) {
+                whState.breathsCount = Math.max(10, Math.min(60, whState.breathsCount + delta));
+                breathsCountInput.value = whState.breathsCount;
+                saveWhSettings();
+                updateWhTotalBreaths();
+                updateWimHofCycleSummary();
+            }
+
+            function changeRounds(delta) {
+                whState.rounds = Math.max(1, Math.min(10, whState.rounds + delta));
+                roundsInput.value = whState.rounds;
+                saveWhSettings();
+                updateWhTotalRounds();
+                updateWimHofCycleSummary();
+            }
+
+            function changeHoldTime(delta) {
+                whState.holdTime = Math.max(0, whState.holdTime + delta);
+                holdTimeInput.value = whState.holdTime;
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            }
+
+            function changeRecoveryInhaleTime(delta) {
+                whState.recoveryInhaleTime = Math.max(1, Math.min(30, whState.recoveryInhaleTime + delta));
+                recoveryInhaleTimeInput.value = whState.recoveryInhaleTime;
+                saveWhSettings();
+                updateWimHofCycleSummary();
+            }
+
+            function toggleWimHofPhaseSounds() {
+                whState.phaseSoundsEnabled = !whState.phaseSoundsEnabled;
+                whTogglePhaseSoundsBtn.classList.toggle('active');
+                saveWhSettings();
+            }
+
+            function toggleWimHofBackgroundSound() {
+                whState.backgroundSoundEnabled = !whState.backgroundSoundEnabled;
+                whToggleBackgroundBtn.classList.toggle('active');
+
+                if (whState.backgroundSoundEnabled && whState.isRunning) {
+                    backgroundSound.play();
+                } else {
+                    backgroundSound.pause();
+                    backgroundSound.currentTime = 0;
+                }
+
+                saveWhSettings();
+            }
+
+            function updateWimHofCycleSummary() {
+                const breathCycleTime = whState.inhalationLength + whState.exhalationLength;
+                const breathingPhaseTime = breathCycleTime * whState.breathsCount;
+                const holdPhaseTime = whState.holdTime === 0 ? 90 : whState.holdTime;
+                const recoveryPhaseTime = whState.recoveryInhaleTime;
+                const totalRoundTime = breathingPhaseTime + holdPhaseTime + recoveryPhaseTime;
+
+                // Форматирование времени цикла
+                let roundTimeText;
+                if (totalRoundTime >= 60) {
+                    const minutes = Math.floor(totalRoundTime / 60);
+                    const seconds = Math.floor(totalRoundTime % 60);
+                    roundTimeText = `${minutes} мин ${seconds > 0 ? seconds + ' сек' : ''}`;
+                } else {
+                    roundTimeText = `${Math.floor(totalRoundTime)} сек`;
+                }
+
+                // Общее время сессии
+                const totalSessionTime = totalRoundTime * whState.rounds;
+                const sessionMinutes = Math.floor(totalSessionTime / 60);
+                const sessionSeconds = Math.floor(totalSessionTime % 60);
+                const sessionTimeText = `${sessionMinutes} мин ${sessionSeconds > 0 ? sessionSeconds + ' сек' : ''}`;
+
+                // Обновляем значения в новом блоке
+                document.getElementById('wh-cycle-duration').textContent = roundTimeText;
+                document.getElementById('wh-inhalation-value').textContent = whState.inhalationLength;
+                document.getElementById('wh-exhalation-value').textContent = whState.exhalationLength;
+                document.getElementById('wh-breaths-value').textContent = whState.breathsCount;
+
+                // Форматируем значение задержки дыхания
+                const holdTimeText = whState.holdTime === 0 ? '∞' : holdPhaseTime + '';
+                document.getElementById('wh-hold-value').textContent = holdTimeText;
+
+                document.getElementById('wh-recovery-value').textContent = whState.recoveryInhaleTime;
+                document.getElementById('wh-rounds-value').textContent = whState.rounds;
+                document.getElementById('wh-session-duration').textContent = sessionTimeText;
+            }
+
+            updateWimHofCycleSummary();
+        });
+    </script>
+    <script>
+        // Переключение между рекомендациями по техникам
+        document.addEventListener('DOMContentLoaded', () => {
+            const techniqueSelect = document.getElementById('technique-select');
+            const boxBreathingContent = document.getElementById('box-breathing-recommendations');
+            const wimHofContent = document.getElementById('wim-hof-recommendations');
+
+            techniqueSelect.addEventListener('change', function () {
+                if (this.value === 'box-breathing') {
+                    boxBreathingContent.classList.add('active');
+                    wimHofContent.classList.remove('active');
+                } else if (this.value === 'wim-hof') {
+                    boxBreathingContent.classList.remove('active');
+                    wimHofContent.classList.add('active');
+                }
+            });
+        });
+    </script>
     <script>
         // Регистрация Service Worker для PWA
         if ('serviceWorker' in navigator) {
