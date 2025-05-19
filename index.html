@@ -485,6 +485,28 @@
             margin-top: 3px;
         }
 
+        .hold-time-presets {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .preset-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .preset-btn:hover {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+        }
+
         .recommendations {
             margin-top: 20px;
             margin-bottom: 30px;
@@ -818,6 +840,12 @@
                             </button>
                         </div>
                         <div class="setting-hint">0 = без ограничения (до нажатия)</div>
+                        <!-- Добавляем шаблоны времени задержки -->
+                        <div class="hold-time-presets">
+                            <button class="preset-btn" data-value="60">60 сек</button>
+                            <button class="preset-btn" data-value="90">90 сек</button>
+                            <button class="preset-btn" data-value="120">120 сек</button>
+                        </div>
                     </div>
 
                     <!-- Новая настройка: время вдоха после задержки -->
@@ -1139,6 +1167,12 @@
     <audio id="completion-sound" preload="auto">
         <source src="sounds/finish.mp3" type="audio/mpeg">
     </audio>
+    <audio id="last-breath-in-sound" preload="auto">
+        <source src="sounds/last_breath_in.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="last-breath-out-sound" preload="auto">
+        <source src="sounds/last_breath_out.mp3" type="audio/mpeg">
+    </audio>
     <script>
         const BACKGROUND_MUSIC_VOLUME = 0.03;
 
@@ -1149,6 +1183,19 @@
             const dropdownItems = document.querySelectorAll('.dropdown-item');
             const recommendationsButton = document.querySelector('.tab-button[data-tab="recommendations"]');
             let currentPractice = 'practice'; // По умолчанию "Квадратичное дыхание"
+
+            // Функция для получения параметра из URL
+            function getUrlParam(param) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(param);
+            }
+
+            // Функция для установки параметра в URL
+            function setUrlParam(param, value) {
+                const url = new URL(window.location);
+                url.searchParams.set(param, value);
+                window.history.replaceState({}, '', url);
+            }
 
             // Проверяем наличие необходимых элементов
             if (!practicesTab || !dropdownContent) {
@@ -1164,8 +1211,49 @@
                 }
             }
 
+            // Функция для активации вкладки
+            function activateTab(tabId) {
+                // Деактивировать все вкладки
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // Деактивировать все кнопки вкладок
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+
+                // Если это вкладка рекомендаций
+                if (tabId === 'recommendations') {
+                    const recommendationsTab = document.getElementById('recommendations');
+                    if (recommendationsTab) {
+                        recommendationsTab.classList.add('active');
+                        recommendationsButton.classList.add('active');
+                        setUrlParam('tab', 'recommendations');
+                    }
+                    return;
+                }
+
+                // Если это одна из практик
+                const tabElement = document.getElementById(tabId);
+                if (tabElement) {
+                    tabElement.classList.add('active');
+                    practicesTab.classList.add('active');
+
+                    // Обновить активный элемент в выпадающем меню
+                    dropdownItems.forEach(item => {
+                        item.classList.toggle('active', item.dataset.tab === tabId);
+                    });
+
+                    updatePracticeTabName();
+                    setUrlParam('tab', tabId);
+                }
+            }
+
             // Инициализация с квадратичным дыханием по умолчанию
             updatePracticeTabName();
+
+            // Проверяем параметр tab в URL при загрузке страницы
+            const tabFromUrl = getUrlParam('tab');
+            if (tabFromUrl) {
+                activateTab(tabFromUrl);
+            }
 
             // Открытие/закрытие выпадающего меню при клике на таб "Практики"
             practicesTab.addEventListener('click', (e) => {
@@ -1199,20 +1287,7 @@
 
                     // Активируем соответствующую вкладку
                     const tab = item.dataset.tab;
-                    currentPractice = tab;
-
-                    // Деактивировать все вкладки
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                    // Активировать выбранную вкладку
-                    const tabElement = document.getElementById(tab);
-                    if (tabElement) {
-                        tabElement.classList.add('active');
-                    }
-
-                    // ИСПРАВЛЕНО: Переключаем активность между кнопками переключения вкладок
-                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                    practicesTab.classList.add('active');
+                    activateTab(tab);
                 });
             });
 
@@ -1220,50 +1295,26 @@
             if (recommendationsButton) {
                 recommendationsButton.addEventListener('click', (e) => {
                     e.preventDefault();
-
-                    // Деактивировать все вкладки
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                    // Активировать вкладку рекомендаций
-                    const recommendationsTab = document.getElementById('recommendations');
-                    if (recommendationsTab) {
-                        recommendationsTab.classList.add('active');
-                    }
-
-                    // Обновляем классы активности у кнопок
-                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                    recommendationsButton.classList.add('active');
+                    activateTab('recommendations');
                 });
             }
 
-            // ДОБАВЛЕНО: Обработчик для переключения на вкладку практик при клике на кнопку "Практики"
+            // Обработчик для переключения на вкладку практик при клике на кнопку "Практики"
             practicesTab.addEventListener('click', (e) => {
                 const activeDropdownItem = document.querySelector('.dropdown-item.active');
                 if (activeDropdownItem && !dropdownContent.contains(e.target)) {
                     e.preventDefault();
                     const tab = activeDropdownItem.dataset.tab;
-
-                    // Деактивировать все вкладки
-                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-                    // Активировать выбранную вкладку
-                    const tabElement = document.getElementById(tab);
-                    if (tabElement) {
-                        tabElement.classList.add('active');
-                    }
-
-                    // Переключаем активность между кнопками переключения вкладок
-                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                    practicesTab.classList.add('active');
+                    activateTab(tab);
                 }
             });
+
+
         });
     </script>
     <script>
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Константы
-
             // Элементы интерфейса
             const timerCount = document.querySelector('.timer-count');
             const phaseText = document.querySelector('.phase-text');
@@ -1789,6 +1840,8 @@
             const recoveryBreathSound = document.getElementById('recovery-breath-sound');
             const backgroundSound = document.getElementById('background-sound');
             const completionSound = document.getElementById('completion-sound');
+            const lastBreathInSound = document.getElementById('last-breath-in-sound');
+            const lastBreathOutSound = document.getElementById('last-breath-out-sound');
 
             // Добавляем обработчик события ended (если ещё не добавлен)
             if (!backgroundSound._hasEndedHandler) {
@@ -2051,6 +2104,21 @@
                     inhaleSound.play();
                 }
 
+                // Добавляем оповещение перед последним вдохом в раунде
+                if (whState.currentPhase === 'exhale' &&
+                    whState.currentBreath === whState.breathsCount - 1 &&
+                    Math.abs(whState.currentTime - 1) < 0.05 &&
+                    whState.phaseSoundsEnabled) {
+                    playWhPhaseSound('last_breath_in');
+                }
+
+                if (whState.currentPhase === 'inhale' &&
+                    whState.currentBreath === whState.breathsCount - 1 &&
+                    Math.abs(whState.currentTime - 1) < 0.05 &&
+                    whState.phaseSoundsEnabled) {
+                    playWhPhaseSound('last_breath_out');
+                }
+
                 if (whState.currentTime <= 0) {
                     // Переходим к следующей фазе
                     moveToNextWhPhase();
@@ -2206,6 +2274,14 @@
                     case 'hold-long':
                         holdLongSound.currentTime = 0;
                         holdLongSound.play();
+                        break;
+                    case 'last_breath_in':
+                        lastBreathInSound.currentTime = 0;
+                        lastBreathInSound.play();
+                        break;
+                    case 'last_breath_out':
+                        lastBreathOutSound.currentTime = 0;
+                        lastBreathOutSound.play();
                         break;
                     case 'recovery':
                         recoveryBreathSound.currentTime = 0;
@@ -2394,6 +2470,16 @@
             }
 
             updateWimHofCycleSummary();
+
+            document.querySelectorAll('.preset-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const value = parseInt(this.dataset.value);
+                    whState.holdTime = value;
+                    holdTimeInput.value = value;
+                    saveWhSettings();
+                    updateWimHofCycleSummary();
+                });
+            });
         });
     </script>
     <script>
