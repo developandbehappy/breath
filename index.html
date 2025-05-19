@@ -7,26 +7,31 @@
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#fff">
     <link rel="apple-touch-icon" href="./icons/192.png">
-    <meta name="description"
-        content="Приложение для дыхательных практик - квадратичное дыхание и метод Вима Хофа. Техники медитации, релаксации и повышения выносливости. Настраиваемые интервалы, звуковые сигналы и таймер для ежедневной практики.">
-    <meta name="keywords"
-        content="квадратичное дыхание, бокс дыхание, метод Вима Хофа, ледяной человек, дыхательные техники, медитация, релаксация, антистресс, управление тревогой, дыхательные упражнения, холодовая терапия">
+
+    <!-- Мультиязычные метатеги -->
+    <meta name="language" content="Russian">
+    <link rel="alternate" hreflang="ru" href="https://developandbehappy.github.io/breath/?lang=ru">
+    <link rel="alternate" hreflang="en" href="https://developandbehappy.github.io/breath/?lang=en">
+    <link rel="alternate" hreflang="de" href="https://developandbehappy.github.io/breath/?lang=de">
+    <link rel="alternate" hreflang="hi" href="https://developandbehappy.github.io/breath/?lang=hi">
+    <link rel="alternate" hreflang="x-default" href="https://developandbehappy.github.io/breath/">
+
+    <meta id="meta-title" itemprop="name" content="Дыхательные техники - квадратичное дыхание и метод Вима Хофа">
+    <meta id="meta-description" itemprop="description"
+        content="Практика квадратичного дыхания и метода Вима Хофа для снижения стресса, улучшения концентрации, релаксации и повышения выносливости.">
+    <meta id="meta-og-title" property="og:title"
+        content="Дыхательные практики - квадратичное дыхание и метод Вима Хофа">
+    <meta id="meta-og-description" property="og:description"
+        content="Дыхательные техники для снятия стресса, улучшения самочувствия и повышения физической выносливости.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://developandbehappy.github.io/breath/">
+    <meta id="meta-keywords" name="keywords"
+        content="квадратичное дыхание, бокс дыхание, метод Вима Хофа, дыхательные техники, медитация, релаксация, антистресс">
     <meta name="author" content="Ваше имя или название проекта">
     <meta name="robots" content="index, follow">
 
-    <!-- Метатеги для Google -->
-    <meta itemprop="name" content="Дыхательные техники - квадратичное дыхание и метод Вима Хофа">
-    <meta itemprop="description"
-        content="Практика квадратичного дыхания и метода Вима Хофа для снижения стресса, улучшения концентрации, релаксации и повышения выносливости. Настраиваемые таймеры и звуковые сигналы.">
-    <meta itemprop="image" content="https://developandbehappy.github.io/breath/icons/192.png">
+    <title id="page-title">Дыхательные практики - квадратичное дыхание и метод Вима Хофа</title>
 
-    <!-- Open Graph метатеги для соцсетей -->
-    <meta property="og:title" content="Дыхательные техники - квадратичное дыхание и метод Вима Хофа">
-    <meta property="og:description"
-        content="Дыхательные техники для снятия стресса, улучшения самочувствия и повышения физической выносливости. Интерактивное веб-приложение с таймером и настройками.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://developandbehappy.github.io/breath/">
-    <title>Дыхательные практики - квадратичное дыхание и метод Вима Хофа</title>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -59,13 +64,87 @@
             line-height: 1.6;
         }
 
+        .language-switcher {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100;
+        }
+
+        .language-btn {
+            padding: 8px 12px;
+            background-color: var(--card-bg);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .language-btn:hover {
+            background-color: #f5f9ff;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            display: none;
+            overflow: hidden;
+            z-index: 101;
+            margin-top: 5px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .language-dropdown.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .language-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .language-option:hover {
+            background-color: rgba(74, 144, 226, 0.05);
+        }
+
+        .language-option.active {
+            background-color: rgba(74, 144, 226, 0.1);
+            font-weight: 500;
+        }
+
+        .language-flag {
+            width: 20px;
+            height: 15px;
+            border-radius: 2px;
+            object-fit: cover;
+        }
+
         .container {
             max-width: 800px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            position: relative;
+            /* Добавлено для позиционирования языкового переключателя */
         }
+
 
         header {
             text-align: center;
@@ -369,6 +448,52 @@
             }
         }
 
+        .dropdown-tab {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--card-bg);
+            min-width: 250px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            border-radius: 12px;
+            top: 100%;
+            left: 0;
+            margin-top: 5px;
+        }
+
+        .dropdown-content.show {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .dropdown-item {
+            color: var(--secondary-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(74, 144, 226, 0.05);
+            color: var(--primary-color);
+        }
+
+        .dropdown-item.active {
+            color: var(--primary-color);
+            background-color: rgba(74, 144, 226, 0.08);
+            font-weight: bold;
+        }
+
+
         @media (max-width: 480px) {
             body {
                 padding: 10px;
@@ -385,6 +510,14 @@
             }
 
 
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .dropdown-content {
+                width: 100%;
+                left: 0;
+            }
 
             .timer-count {
                 font-size: 3.5rem;
@@ -550,14 +683,23 @@
 
 <body>
     <div class="container">
+
+
         <header>
             <h1>Дыхательные практики</h1>
         </header>
 
         <!-- Панель с вкладками -->
         <div class="tabs">
-            <button class="tab-button active" data-tab="practice">Квадратичное дыхание</button>
-            <button class="tab-button" data-tab="wim-hof">Метод Вима Хофа</button>
+            <div class="dropdown-tab">
+                <button class="tab-button active" id="practices-tab">
+                    Практики <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="#" data-tab="practice" class="dropdown-item active">Квадратичное дыхание</a>
+                    <a href="#" data-tab="wim-hof" class="dropdown-item">Метод Вима Хофа</a>
+                </div>
+            </div>
             <button class="tab-button" data-tab="recommendations">Рекомендации</button>
         </div>
 
@@ -684,7 +826,7 @@
                             <button id="decrease-inhalation" class="btn-circle">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <input type="number" id="wh-inhalation-length" min="1" max="10" value="1.5" step="0.5">
+                            <input type="number" id="wh-inhalation-length" min="1" max="100" value="1.5" step="0.5">
                             <button id="increase-inhalation" class="btn-circle">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -697,7 +839,7 @@
                             <button id="decrease-exhalation" class="btn-circle">
                                 <i class="fas fa-minus"></i>
                             </button>
-                            <input type="number" id="wh-exhalation-length" min="1" max="10" value="2" step="0.5">
+                            <input type="number" id="wh-exhalation-length" min="1" max="100" value="2" step="0.5">
                             <button id="increase-exhalation" class="btn-circle">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -1066,9 +1208,127 @@
     <audio id="completion-sound" preload="auto">
         <source src="sounds/finish.mp3" type="audio/mpeg">
     </audio>
-
     <script>
-            const BACKGROUND_MUSIC_VOLUME = 0.03;
+        const BACKGROUND_MUSIC_VOLUME = 0.03;
+
+        // Функционал для выпадающего меню практик
+        document.addEventListener('DOMContentLoaded', () => {
+            const practicesTab = document.getElementById('practices-tab');
+            const dropdownContent = document.querySelector('.dropdown-content');
+            const dropdownItems = document.querySelectorAll('.dropdown-item');
+            const recommendationsButton = document.querySelector('.tab-button[data-tab="recommendations"]');
+            let currentPractice = 'practice'; // По умолчанию "Квадратичное дыхание"
+
+            // Проверяем наличие необходимых элементов
+            if (!practicesTab || !dropdownContent) {
+                console.error('Не найдены необходимые элементы навигации');
+                return; // Прерываем выполнение если элементы не найдены
+            }
+
+            // Функция для обновления названия активной практики
+            function updatePracticeTabName() {
+                const activePractice = document.querySelector('.dropdown-item.active');
+                if (activePractice) {
+                    practicesTab.innerHTML = activePractice.textContent + ' <i class="fas fa-chevron-down"></i>';
+                }
+            }
+
+            // Инициализация с квадратичным дыханием по умолчанию
+            updatePracticeTabName();
+
+            // Открытие/закрытие выпадающего меню при клике на таб "Практики"
+            practicesTab.addEventListener('click', (e) => {
+                e.preventDefault();
+                dropdownContent.classList.toggle('show');
+            });
+
+            // Закрытие выпадающего меню при клике вне меню
+            document.addEventListener('click', (e) => {
+                if (!practicesTab.contains(e.target) && !dropdownContent.contains(e.target)) {
+                    dropdownContent.classList.remove('show');
+                }
+            });
+
+            // Обработка выбора практики из выпадающего меню
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Удаляем активный класс со всех элементов
+                    dropdownItems.forEach(item => item.classList.remove('active'));
+
+                    // Добавляем активный класс выбранному элементу
+                    item.classList.add('active');
+
+                    // Закрываем выпадающее меню
+                    dropdownContent.classList.remove('show');
+
+                    // Обновляем название активной практики
+                    updatePracticeTabName();
+
+                    // Активируем соответствующую вкладку
+                    const tab = item.dataset.tab;
+                    currentPractice = tab;
+
+                    // Деактивировать все вкладки
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                    // Активировать выбранную вкладку
+                    const tabElement = document.getElementById(tab);
+                    if (tabElement) {
+                        tabElement.classList.add('active');
+                    }
+
+                    // ИСПРАВЛЕНО: Переключаем активность между кнопками переключения вкладок
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    practicesTab.classList.add('active');
+                });
+            });
+
+            // Обработчик для кнопки "Рекомендации"
+            if (recommendationsButton) {
+                recommendationsButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+
+                    // Деактивировать все вкладки
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                    // Активировать вкладку рекомендаций
+                    const recommendationsTab = document.getElementById('recommendations');
+                    if (recommendationsTab) {
+                        recommendationsTab.classList.add('active');
+                    }
+
+                    // Обновляем классы активности у кнопок
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    recommendationsButton.classList.add('active');
+                });
+            }
+
+            // ДОБАВЛЕНО: Обработчик для переключения на вкладку практик при клике на кнопку "Практики"
+            practicesTab.addEventListener('click', (e) => {
+                const activeDropdownItem = document.querySelector('.dropdown-item.active');
+                if (activeDropdownItem && !dropdownContent.contains(e.target)) {
+                    e.preventDefault();
+                    const tab = activeDropdownItem.dataset.tab;
+
+                    // Деактивировать все вкладки
+                    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                    // Активировать выбранную вкладку
+                    const tabElement = document.getElementById(tab);
+                    if (tabElement) {
+                        tabElement.classList.add('active');
+                    }
+
+                    // Переключаем активность между кнопками переключения вкладок
+                    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                    practicesTab.classList.add('active');
+                }
+            });
+        });
+    </script>
+    <script>
 
         document.addEventListener('DOMContentLoaded', () => {
             // Константы
@@ -1545,24 +1805,6 @@
             }
 
             updateCyclesDisplay();
-
-            // Добавим обработчики для вкладок
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const tab = button.dataset.tab;
-
-                    // Деактивировать все вкладки
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    tabContents.forEach(content => content.classList.remove('active'));
-
-                    // Активировать выбранную вкладку
-                    button.classList.add('active');
-                    document.getElementById(tab).classList.add('active');
-                });
-            });
         });
     </script>
     <script>
@@ -2118,14 +2360,14 @@
             }
 
             function changeInhalation(delta) {
-                whState.inhalationLength = Math.max(0.5, Math.min(10, whState.inhalationLength + delta));
+                whState.inhalationLength = Math.max(0.5, Math.min(100, whState.inhalationLength + delta));
                 inhalationLengthInput.value = whState.inhalationLength.toFixed(1);
                 saveWhSettings();
                 updateWimHofCycleSummary();
             }
 
             function changeExhalation(delta) {
-                whState.exhalationLength = Math.max(0.5, Math.min(10, whState.exhalationLength + delta));
+                whState.exhalationLength = Math.max(0.5, Math.min(100, whState.exhalationLength + delta));
                 exhalationLengthInput.value = whState.exhalationLength.toFixed(1);
                 saveWhSettings();
                 updateWimHofCycleSummary();
