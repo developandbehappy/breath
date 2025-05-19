@@ -64,76 +64,6 @@
             line-height: 1.6;
         }
 
-        .language-switcher {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 100;
-        }
-
-        .language-btn {
-            padding: 8px 12px;
-            background-color: var(--card-bg);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-            transition: var(--transition);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .language-btn:hover {
-            background-color: #f5f9ff;
-        }
-
-        .language-dropdown {
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            min-width: 160px;
-            display: none;
-            overflow: hidden;
-            z-index: 101;
-            margin-top: 5px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-        }
-
-        .language-dropdown.show {
-            display: block;
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .language-option {
-            padding: 10px 15px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: var(--transition);
-        }
-
-        .language-option:hover {
-            background-color: rgba(74, 144, 226, 0.05);
-        }
-
-        .language-option.active {
-            background-color: rgba(74, 144, 226, 0.1);
-            font-weight: 500;
-        }
-
-        .language-flag {
-            width: 20px;
-            height: 15px;
-            border-radius: 2px;
-            object-fit: cover;
-        }
 
         .container {
             max-width: 800px;
@@ -511,7 +441,8 @@
 
 
             .tabs {
-                flex-wrap: wrap;
+                /* flex-wrap: wrap; */
+                padding: 0;
             }
 
             .dropdown-content {
