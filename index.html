@@ -303,7 +303,7 @@
             height: 100%;
             background: linear-gradient(90deg, var(--circle-inhale), var(--circle-hold1));
             width: 0%;
-            transition: width 0.2s linear;
+            transition: width 0.1s linear;
         }
 
         .cycles-info {
@@ -2724,6 +2724,52 @@
                     .catch(err => console.log('Ошибка регистрации Service Worker:', err));
             });
         }
+    </script>
+
+    <script>
+        // Определяем переменную для сохранения события установки
+        let deferredInstallPrompt;
+
+        // Слушаем событие beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Предотвращаем появление баннера по умолчанию
+            e.preventDefault();
+            // Сохраняем событие для использования позже
+            deferredInstallPrompt = e;
+
+            // Создаем кнопку установки
+            const installBtn = document.createElement('button');
+            installBtn.className = 'btn primary';
+            installBtn.style.position = 'fixed';
+            installBtn.style.bottom = '20px';
+            installBtn.style.right = '20px';
+            installBtn.style.zIndex = '9999';
+            installBtn.innerHTML = '<i class="fas fa-download"></i> Установить приложение';
+
+            installBtn.addEventListener('click', (e) => {
+                // Показываем баннер установки
+                if (deferredInstallPrompt) {
+                    deferredInstallPrompt.prompt();
+
+                    // Ждем ответа пользователя
+                    deferredInstallPrompt.userChoice.then((choiceResult) => {
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('Пользователь установил приложение');
+                        } else {
+                            console.log('Пользователь отклонил установку');
+                        }
+                        // Обнуляем переменную
+                        deferredInstallPrompt = null;
+
+                        // Удаляем кнопку после попытки установки
+                        document.body.removeChild(installBtn);
+                    });
+                }
+            });
+
+            // Добавляем кнопку на страницу
+            document.body.appendChild(installBtn);
+        });
     </script>
 </body>
 
