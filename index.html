@@ -1758,9 +1758,13 @@
                             state.currentPhase = 'hold2';
                             playPhaseSound('hold');
                             state.phaseCounter = 4;
-                            // Завершен полный цикл
                             state.currentCycle++;
                             updateCyclesDisplay();
+                            break;
+                        case 'hold2':
+                            state.currentPhase = 'inhale';
+                            playPhaseSound('inhale');
+                            state.phaseCounter = 1; // Начинаем новый цикл
                             break;
                     }
 
@@ -1821,14 +1825,14 @@
                         document.documentElement.style.setProperty('--duration', `${state.intervalLength}s`);
                         break;
                     case 'hold1':
-                        phaseText.textContent = 'Задержка';
+                        phaseText.textContent = 'Задержка после вдоха';
                         break;
                     case 'exhale':
                         phaseText.textContent = 'Выдох';
                         document.documentElement.style.setProperty('--duration', `${state.intervalLength}s`);
                         break;
                     case 'hold2':
-                        phaseText.textContent = 'Задержка';
+                        phaseText.textContent = 'Задержка после выдоха';
                         break;
                 }
                 updateCyclesDisplay();
