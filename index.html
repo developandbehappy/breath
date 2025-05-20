@@ -423,6 +423,58 @@
             font-weight: bold;
         }
 
+        .wh-templates {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background-color: rgba(74, 144, 226, 0.05);
+            border: 1px dashed var(--secondary-color);
+        }
+
+        .wh-templates h3 {
+            margin-bottom: 12px;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .template-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .template-btn {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--secondary-color);
+            color: var(--secondary-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .template-btn:hover {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .template-btn i {
+            font-size: 0.9rem;
+        }
+
+        .template-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
 
         @media (max-width: 480px) {
             body {
@@ -439,6 +491,14 @@
                 bottom: 40px;
             }
 
+            .template-buttons {
+                flex-direction: column;
+            }
+
+            .template-btn {
+                width: 100%;
+                justify-content: center;
+            }
 
             .tabs {
                 /* flex-wrap: wrap; */
@@ -735,6 +795,7 @@
                     </p>
                 </div>
 
+
                 <div class="action-buttons">
                     <button id="start-btn" class="btn primary">Начать</button>
                     <button id="pause-btn" class="btn" disabled>Пауза</button>
@@ -893,6 +954,11 @@
                     </p>
                     <p>Полная сессия (<span id="wh-rounds-value">3</span> раунда): <span id="wh-session-duration">20
                             мин 15 сек</span></p>
+                </div>
+
+                <div class="wh-templates">
+                    <h3>Готовые шаблоны:</h3>
+                    <div class="template-buttons"></div>
                 </div>
                 <div class="action-buttons">
                     <button id="wh-start-btn" class="btn primary">Начать</button>
@@ -2096,9 +2162,9 @@
                 // Обновляем прогресс-бар в зависимости от текущей фазы
                 updateWhProgressBar();
 
-                // Играем дополнительный звук за 3 секунды до конца восстановительной фазы
+                // Играем дополнительный звук за 6 секунд до конца восстановительной фазы
                 if (whState.currentPhase === 'recovery' &&
-                    Math.abs(whState.currentTime - 3) < 0.05 &&
+                    Math.abs(whState.currentTime - 6) < 0.05 &&
                     whState.phaseSoundsEnabled) {
                     inhaleSound.currentTime = 0;
                     inhaleSound.play();
@@ -2471,6 +2537,7 @@
 
             updateWimHofCycleSummary();
 
+
             document.querySelectorAll('.preset-btn').forEach(button => {
                 button.addEventListener('click', function () {
                     const value = parseInt(this.dataset.value);
@@ -2480,6 +2547,154 @@
                     updateWimHofCycleSummary();
                 });
             });
+
+
+            const templateButtons = document.querySelectorAll('.template-btn');
+
+            // Определяем шаблоны с настройками
+            const templates = {
+                beginner: {
+                    name: '1 минута',
+                    icon: 'leaf',
+                    inhalationLength: 4.5,
+                    exhalationLength: 4.5,
+                    breathsCount: 30,
+                    rounds: 3,
+                    holdTime: 60,
+                    recoveryInhaleTime: 20
+                },
+                classic: {
+                    name: '1.5 минуты',
+                    icon: 'water',
+                    inhalationLength: 4.5,
+                    exhalationLength: 4.5,
+                    breathsCount: 30,
+                    rounds: 3,
+                    holdTime: 90,
+                    recoveryInhaleTime: 20
+                },
+                advanced: {
+                    name: '2 минуты',
+                    icon: 'fire',
+                    inhalationLength: 4.5,
+                    exhalationLength: 4.5,
+                    breathsCount: 30,
+                    rounds: 3,
+                    holdTime: 120,
+                    recoveryInhaleTime: 20
+                },
+                quick: {
+                    name: '3 минуты',
+                    icon: 'bolt',
+                    inhalationLength: 4.5,
+                    exhalationLength: 4.5,
+                    breathsCount: 30,
+                    rounds: 3,
+                    holdTime: 180,
+                    recoveryInhaleTime: 20
+                },
+                extendedStart: {
+                    name: 'Расширенное дыхание',
+                    icon: 'lungs',
+                    inhalationLength: 16,
+                    exhalationLength: 16,
+                    breathsCount: 60,
+                    rounds: 1,
+                    holdTime: 60,
+                    recoveryInhaleTime: 20
+                }
+            };
+
+
+
+            // Обработчик нажатия на кнопку шаблона
+            templateButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const templateName = this.dataset.template;
+                    const templateSettings = templates[templateName];
+
+                    if (templateSettings) {
+                        // Устанавливаем активный класс только для выбранной кнопки
+                        templateButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+
+                        // Применяем настройки шаблона
+                        applyTemplate(templateSettings);
+                    }
+                });
+            });
+
+            // Функция для генерации кнопок шаблонов
+            function generateTemplateButtons() {
+                const templateButtonsContainer = document.querySelector('.template-buttons');
+                if (!templateButtonsContainer) return;
+
+                // Очищаем контейнер
+                templateButtonsContainer.innerHTML = '';
+
+                // Создаем кнопки для каждого шаблона
+                for (const [id, template] of Object.entries(templates)) {
+                    const button = document.createElement('button');
+                    button.className = 'template-btn';
+                    button.dataset.template = id;
+
+                    button.innerHTML = `<i class="fas fa-${template.icon || 'star'}"></i> ${template.name}`;
+
+                    templateButtonsContainer.appendChild(button);
+                }
+
+                // Добавляем обработчики событий для новых кнопок
+                document.querySelectorAll('.template-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        const templateName = this.dataset.template;
+                        const templateSettings = templates[templateName];
+
+                        if (templateSettings) {
+                            // Устанавливаем активный класс только для выбранной кнопки
+                            document.querySelectorAll('.template-btn').forEach(btn => btn.classList.remove('active'));
+                            this.classList.add('active');
+
+                            // Применяем настройки шаблона
+                            applyTemplate(templateSettings);
+                        }
+                    });
+                });
+            }
+
+            // Вызываем функцию генерации кнопок
+            generateTemplateButtons();
+
+            // Функция применения шаблона
+            function applyTemplate(settings) {
+                // Обновляем значения в интерфейсе
+                document.getElementById('wh-inhalation-length').value = settings.inhalationLength;
+                document.getElementById('wh-exhalation-length').value = settings.exhalationLength;
+                document.getElementById('wh-breaths-count').value = settings.breathsCount;
+                document.getElementById('wh-rounds').value = settings.rounds;
+                document.getElementById('wh-hold-time').value = settings.holdTime;
+                document.getElementById('wh-recovery-inhale-time').value = settings.recoveryInhaleTime;
+
+                // Обновляем состояние приложения
+                if (whState) {
+                    whState.inhalationLength = settings.inhalationLength;
+                    whState.exhalationLength = settings.exhalationLength;
+                    whState.breathsCount = settings.breathsCount;
+                    whState.rounds = settings.rounds;
+                    whState.holdTime = settings.holdTime;
+                    whState.recoveryInhaleTime = settings.recoveryInhaleTime;
+
+                    // Сохраняем настройки
+                    saveWhSettings();
+
+                    // Обновляем отображение
+                    updateWhTotalBreaths();
+                    updateWhTotalRounds();
+                    updateWimHofCycleSummary();
+                }
+            }
+
+
+
         });
     </script>
     <script>
